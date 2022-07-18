@@ -42,16 +42,15 @@ public class stg_ModPlugin extends BaseModPlugin {
                 }
                 for (SectorEntityToken gate : Global.getSector().getCustomEntitiesWithTag(Tags.GATE)) {
                     try {
-
                         if (systemsWithMarketList.contains(gate.getContainingLocation().getId())
                                 && !gate.getMemoryWithoutUpdate().getBoolean(GateEntityPlugin.GATE_SCANNED)) {
                             gate.getMemory().set(GateEntityPlugin.GATE_SCANNED, true);
-                            log.debug(gate.getName() + " in system " +
-                                    gate.getContainingLocation().getName() + " is activated.");
                             GateCMD.notifyScanned(gate);
+                            log.debug(gate.getName() + " in system " + gate.getContainingLocation().getName() + " is activated.");
                         }
-                    } catch (Exception e) {log.debug(gate.getName() + " in system " +
-                            gate.getContainingLocation().getName() + " IS BROKEN.");}
+                    } catch (Exception e) {
+                        log.debug(gate.getName() + " in system " + gate.getContainingLocation().getName() + " IS BROKEN. Exception: " + e);
+                    }
                 }
             }
         }
