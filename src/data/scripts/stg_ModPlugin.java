@@ -58,23 +58,27 @@ public class stg_ModPlugin extends BaseModPlugin {
                             GateCMD.notifyScanned(gate);
                             gateStatusString = " is activated.";
                             revealThatGate = true;
-                        } 
+                        }
                         else {
                             gateStatusString = " is an inactive gate, ignoring.";
                         }
-                    } 
+                    }
                     catch (Exception e) {
                         gateStatusString = " IS BROKEN. Exception: " + e;
                         revealThatGate = true;
-                    } 
+                    }
                     finally {
-                        if (!Global.getSector().getIntelManager().hasIntel(gateIntelStatus) && revealAllGates){
-                            Global.getSector().getIntelManager().addIntel(gateIntelStatus);
-                        } 
-                        else if (!Global.getSector().getIntelManager().hasIntel(gateIntelStatus) && revealThatGate){
-                            Global.getSector().getIntelManager().addIntel(gateIntelStatus);
+                        try {
+                            if (!Global.getSector().getIntelManager().hasIntel(gateIntelStatus) && revealAllGates) {
+                                Global.getSector().getIntelManager().addIntel(gateIntelStatus);
+                            } else if (!Global.getSector().getIntelManager().hasIntel(gateIntelStatus) && revealThatGate) {
+                                Global.getSector().getIntelManager().addIntel(gateIntelStatus);
+                            }
                         }
-                        log.debug(gate.getName() + " in system " + gate.getContainingLocation().getName() + gateStatusString);
+                        catch (Exception i) {
+                            log.debug(gate.getName() + " in " + gate.getContainingLocation().getName() + " somehow broke the intel system. Exception: " + i);
+                        }
+                        log.debug(gate.getName() + " in " + gate.getContainingLocation().getName() + gateStatusString);
                     }
                 }
             }
