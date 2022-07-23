@@ -4,10 +4,13 @@ import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
+import com.fs.starfarer.api.campaign.comm.IntelManagerAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.GateEntityPlugin;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.intel.misc.GateIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.missions.GateCMD;
+import com.fs.starfarer.campaign.comms.v2.IntelManager;
 import exerelin.campaign.ExerelinSetupData;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -25,6 +28,8 @@ public class stg_ModPlugin extends BaseModPlugin {
     public void onNewGameAfterTimePass() {
         boolean haveNexerelin = Global.getSettings().getModManager().isModEnabled("nexerelin");
         boolean haveSkipStory = Global.getSettings().getModManager().isModEnabled("skipStory");
+        boolean revealAllGates = Global.getSettings().getBoolean("AddInactiveGatesToIntel");
+        boolean scanAllGates = Global.getSettings().getBoolean("ScanAllGates");
         if (haveNexerelin || haveSkipStory) {
             boolean activateThoseGates;
 
@@ -40,16 +45,36 @@ public class stg_ModPlugin extends BaseModPlugin {
                         }
                     }
                 }
+                String gateStatusString = "null";
+                boolean revealThatGate;
                 for (SectorEntityToken gate : Global.getSector().getCustomEntitiesWithTag(Tags.GATE)) {
+                    boolean gateScanStatus = gate.getMemoryWithoutUpdate().getBoolean(GateEntityPlugin.GATE_SCANNED);
+                    GateIntel gateIntelStatus = new GateIntel(gate);
+                    revealThatGate = false;
                     try {
-                        if (systemsWithMarketList.contains(gate.getContainingLocation().getId())
-                                && !gate.getMemoryWithoutUpdate().getBoolean(GateEntityPlugin.GATE_SCANNED)) {
+                        if ((systemsWithMarketList.contains(gate.getContainingLocation().getId()) && !gateScanStatus)
+                                || (scanAllGates && !gateScanStatus)){
                             gate.getMemory().set(GateEntityPlugin.GATE_SCANNED, true);
                             GateCMD.notifyScanned(gate);
-                            log.debug(gate.getName() + " in system " + gate.getContainingLocation().getName() + " is activated.");
+                            gateStatusString = " is activated.";
+                            revealThatGate = true;
+                        } 
+                        else {
+                            gateStatusString = " is an inactive gate, ignoring.";
                         }
-                    } catch (Exception e) {
-                        log.debug(gate.getName() + " in system " + gate.getContainingLocation().getName() + " IS BROKEN. Exception: " + e);
+                    } 
+                    catch (Exception e) {
+                        gateStatusString = " IS BROKEN. Exception: " + e;
+                        revealThatGate = true;
+                    } 
+                    finally {
+                        if (!Global.getSector().getIntelManager().hasIntel(gateIntelStatus) && revealAllGates){
+                            Global.getSector().getIntelManager().addIntel(gateIntelStatus);
+                        } 
+                        else if (!Global.getSector().getIntelManager().hasIntel(gateIntelStatus) && revealThatGate){
+                            Global.getSector().getIntelManager().addIntel(gateIntelStatus);
+                        }
+                        log.debug(gate.getName() + " in system " + gate.getContainingLocation().getName() + gateStatusString);
                     }
                 }
             }
