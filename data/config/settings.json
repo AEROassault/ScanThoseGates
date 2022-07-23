@@ -3,5 +3,5 @@
   "AddInactiveGatesToIntel": false, # Default false
 
   # Setting to true will scan all gates, regardless of whether there is a non-hidden market or not
-  "ScanAllGates": false, #Default false
+  "ScanAllGates": false, # Default false
 }
