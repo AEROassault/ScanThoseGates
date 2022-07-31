@@ -5,9 +5,9 @@
 	"modVersion":
 	{
 		"major":1,
-		"minor":4,
-		"patch":1,
+		"minor":5,
+		"patch":0,
 	},
 	"starsectorVersion":"0.95.1a-RC6",
-	"directDownloadURL":"https://github.com/AEROassault/ScanThoseGates/releases/download/v1.4.1/ScanThoseGates.zip",
+	"directDownloadURL":"https://github.com/AEROassault/ScanThoseGates/releases/download/v1.5.0/ScanThoseGates.zip",
 }

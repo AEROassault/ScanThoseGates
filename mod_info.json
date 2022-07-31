@@ -2,7 +2,7 @@
   "id":"scan_those_gates",
   "name":"Scan Those Gates",
   "author":"AERO",
-  "version":"1.4.1",
+  "version":"1.5.0",
   "description":"Scans all gates that are located in systems with at least one non-hidden market at save start",
   "gameVersion":"0.95.1a-RC6",
   "jars":["jars/ScanThoseGates.jar"],
