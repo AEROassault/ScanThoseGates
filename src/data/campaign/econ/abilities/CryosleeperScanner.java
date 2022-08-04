@@ -13,6 +13,7 @@ import com.fs.starfarer.api.util.Misc;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+
 public class CryosleeperScanner extends BaseDurationAbility {
     public static String CAN_SCAN_CRYOSLEEPERS = "$CryosleeperScannerAllowed";
     private static final Logger log = Global.getLogger(data.campaign.econ.abilities.CryosleeperScanner.class);
@@ -25,7 +26,14 @@ public class CryosleeperScanner extends BaseDurationAbility {
 
     @Override
     protected void applyEffect(float amount, float level) {
-        startCryosleeperScan();
+        if (Global.getSector().getMemoryWithoutUpdate().getBoolean(CAN_SCAN_CRYOSLEEPERS)){
+            for (SectorEntityToken cryosleeper : Global.getSector().getCustomEntitiesWithTag(Tags.CRYOSLEEPER)){
+                if (tryCreateCryosleeperReportCustom(cryosleeper, log, true)
+                        && Global.getSector().getMemoryWithoutUpdate().getBoolean(CAN_SCAN_CRYOSLEEPERS)){
+                    Global.getSector().getMemoryWithoutUpdate().set(CAN_SCAN_CRYOSLEEPERS, false);
+                }
+            }
+        }
     }
 
     @Override
@@ -52,8 +60,7 @@ public class CryosleeperScanner extends BaseDurationAbility {
         if (fleet == null) return;
         tooltip.addTitle("Remote Cryosleeper Survey");
         float pad = 10f;
-        tooltip.addPara("Remotely surveys all Cryosleepers in the sector and adds them to the intel screen.",
-                Misc.getHighlightColor(),pad);
+        tooltip.addPara("Remotely surveys all Cryosleepers in the sector and adds them to the intel screen.", pad);
 
         if (Global.getSector().getMemoryWithoutUpdate().getBoolean(CAN_SCAN_CRYOSLEEPERS)){
             tooltip.addPara("Cryosleeper survey is ready to activate.", Misc.getPositiveHighlightColor(), pad);
@@ -64,17 +71,7 @@ public class CryosleeperScanner extends BaseDurationAbility {
         addIncompatibleToTooltip(tooltip, expanded);
     }
 
-    public void startCryosleeperScan(){
-        if (Global.getSector().getMemoryWithoutUpdate().getBoolean(CAN_SCAN_CRYOSLEEPERS)){
-            for (SectorEntityToken cryosleeper : Global.getSector().getCustomEntitiesWithTag(Tags.CRYOSLEEPER)){
-                if (tryCreateCryosleeperReportCustom(cryosleeper, log, true)){
-                    Global.getSector().getMemoryWithoutUpdate().set(CAN_SCAN_CRYOSLEEPERS, false);
-                }
-            }
-        }
-    }
-
-    public boolean tryCreateCryosleeperReportCustom(SectorEntityToken cryosleeper, Logger log, boolean showMessage){
+    public static boolean tryCreateCryosleeperReportCustom(SectorEntityToken cryosleeper, Logger log, boolean showMessage) {
         IntelManagerAPI intelManager = Global.getSector().getIntelManager();
         for (IntelInfoPlugin intel : intelManager.getIntel(UnremovableIntel.class)) {
             UnremovableIntel cs = (UnremovableIntel) intel;
@@ -87,6 +84,7 @@ public class CryosleeperScanner extends BaseDurationAbility {
         report.setNew(showMessage);
         intelManager.addIntel(report, !showMessage);
         log.info("Created intel report for cryosleeper in " + cryosleeper.getStarSystem());
+
         return true;
     }
 }

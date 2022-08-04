@@ -1,6 +1,6 @@
 name,id,type,tags,activationDays,activationCooldown,durationDays,deactivationDays,deactivationCooldown,unlockedAtStart,defaultForAIFleet,musicSuppression,uiOn,uiOff,uiLoop,worldOn,worldOff,worldLoop,icon,plugin,ai,desc,sortOrder
-Remote Gate Scan,stg_GateScanner,DURATION,,0.1,,0.001,,1,TRUE,FALSE,,,,,,,,graphics/ScanThoseGates/icons/abilities/stg_gate_scanner.png,data.campaign.econ.abilities.GateScanner,,Allows for remote scanning of gates after obtaining the Janus Device.,2000
-Remote Hypershunt Survey,stg_HypershuntScanner,DURATION,,0.1,,0.001,,1,FALSE,FALSE,,,,,,,,graphics/ScanThoseGates/icons/abilities/stg_hypershunt_scanner.png,data.campaign.econ.abilities.HypershuntScanner,,Allows for remotely identifying hypershunts on the intel screen.,2001
-Remote Cryosleeper Survey,stg_CryosleeperScanner,DURATION,,0.1,,0.001,,1,FALSE,FALSE,,,,,,,,graphics/ScanThoseGates/icons/abilities/stg_cryosleeper_scanner.png,data.campaign.econ.abilities.CryosleeperScanner,,Allows for remotely identifying cryosleepers on the intel screen.,2002
+Remote Gate Scan,stg_GateScanner,DURATION,,0.05,,0.05,0.05,1,TRUE,FALSE,,,,,,,,graphics/ScanThoseGates/icons/abilities/stg_gate_scanner.png,data.campaign.econ.abilities.GateScanner,,Allows for remote scanning of gates after obtaining the Janus Device.,2000
+Remote Hypershunt Survey,stg_HypershuntScanner,DURATION,,0.05,,0.05,0.05,1,FALSE,FALSE,,,,,,,,graphics/ScanThoseGates/icons/abilities/stg_hypershunt_scanner.png,data.campaign.econ.abilities.HypershuntScanner,,Allows for remotely identifying hypershunts on the intel screen.,2001
+Remote Cryosleeper Survey,stg_CryosleeperScanner,DURATION,,0.05,,0.05,0.05,1,FALSE,FALSE,,,,,,,,graphics/ScanThoseGates/icons/abilities/stg_cryosleeper_scanner.png,data.campaign.econ.abilities.CryosleeperScanner,,Allows for remotely identifying cryosleepers on the intel screen.,2002
 ,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,
