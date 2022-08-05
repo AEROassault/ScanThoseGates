@@ -28,8 +28,9 @@ public class GateScanner extends BaseDurationAbility {
     private static final Logger log = Global.getLogger(data.campaign.econ.abilities.GateScanner.class);
     static {log.setLevel(Level.ALL);}
     boolean gateScanPrimed;
-
-    final float secondsBetweenChecks = 30;
+    final float checksReportInterval = 60;
+    float secondsSinceLastReport = 0;
+    final float secondsBetweenChecks = 1;
     float secondsSinceLastCheck = 0;
 
     @Override
@@ -76,7 +77,8 @@ public class GateScanner extends BaseDurationAbility {
         Global.getSector().getMemoryWithoutUpdate().set(UNSCANNED_GATES, false);
         systemsWithMarkets.clear();
         long elapsedTime = System.nanoTime() - startTime;
-        log.debug("It took " + elapsedTime / pow(10, 9) + " seconds (" + elapsedTime + " nanoseconds) to execute the gate scan.");
+        log.debug("It took " + elapsedTime / pow(10, 9) + " seconds (" + elapsedTime/pow(10, 6) + " milliseconds or "
+                + elapsedTime + " nanoseconds) to execute the gate scan.");
     }
 
     @Override
@@ -89,13 +91,18 @@ public class GateScanner extends BaseDurationAbility {
     public void advance(float amount) {
         super.advance(amount);
         secondsSinceLastCheck += amount;
+        secondsSinceLastReport += amount;
         if (secondsSinceLastCheck > secondsBetweenChecks) {
             long startUseableCheck = System.nanoTime();
             checkForGates();
             secondsSinceLastCheck = 0;
             systemsWithMarkets.clear();
             long endUseableCheck = System.nanoTime() - startUseableCheck;
-            log.debug("CheckForGates() took " + endUseableCheck/pow(10, 9) + " seconds (" + endUseableCheck + " nanoseconds) to complete.");
+            if (secondsSinceLastReport > checksReportInterval) {
+                log.debug("CheckForGates() took " + endUseableCheck / pow(10, 9) + " seconds (" + endUseableCheck/pow(10, 6)
+                        + " milliseconds or " + endUseableCheck + " nanoseconds) to complete.");
+                secondsSinceLastReport = 0;
+            }
         }
     }
 
