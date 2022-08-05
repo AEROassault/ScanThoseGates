@@ -1,6 +1,5 @@
 package data.campaign.econ.abilities;
 
-import CaptainsLog.campaign.intel.UnremovableIntel;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -10,6 +9,7 @@ import com.fs.starfarer.api.impl.campaign.abilities.BaseDurationAbility;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import data.campaign.intel.CryosleeperIntel;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -48,8 +48,7 @@ public class CryosleeperScanner extends BaseDurationAbility {
 
     @Override
     public boolean isUsable() {
-        return Global.getSettings().getModManager().isModEnabled("CaptainsLog")
-                && Global.getSector().getMemoryWithoutUpdate().getBoolean(CAN_SCAN_CRYOSLEEPERS);
+        return Global.getSector().getMemoryWithoutUpdate().getBoolean(CAN_SCAN_CRYOSLEEPERS);
     }
 
     @Override
@@ -73,14 +72,14 @@ public class CryosleeperScanner extends BaseDurationAbility {
 
     public static boolean tryCreateCryosleeperReportCustom(SectorEntityToken cryosleeper, Logger log, boolean showMessage) {
         IntelManagerAPI intelManager = Global.getSector().getIntelManager();
-        for (IntelInfoPlugin intel : intelManager.getIntel(UnremovableIntel.class)) {
-            UnremovableIntel cs = (UnremovableIntel) intel;
+        for (IntelInfoPlugin intel : intelManager.getIntel(CryosleeperIntel.class)) {
+            CryosleeperIntel cs = (CryosleeperIntel) intel;
             if (cs.getEntity() == cryosleeper) {
                 return false; // report exists
             }
         }
 
-        UnremovableIntel report = new UnremovableIntel(cryosleeper);
+        CryosleeperIntel report = new CryosleeperIntel(cryosleeper);
         report.setNew(showMessage);
         intelManager.addIntel(report, !showMessage);
         log.info("Created intel report for cryosleeper in " + cryosleeper.getStarSystem());

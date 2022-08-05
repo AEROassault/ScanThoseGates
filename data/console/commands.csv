@@ -1,0 +1,2 @@
+command,class,tags,syntax,help,
+RemoveScanThoseGates,data.console.RemoveScanThoseGates,"campaign, ScanThoseGates",RemoveScanThoseGates,"Removes all abilities and intel entries added by the Scan Those Gates mod. After running the command and saving your game, the mod can safely be removed.",

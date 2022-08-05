@@ -16,8 +16,7 @@ import com.fs.starfarer.api.util.Misc;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 
 import static java.lang.Math.pow;
 
@@ -25,34 +24,27 @@ public class GateScanner extends BaseDurationAbility {
     public static String UNSCANNED_GATES = "$UnscannedGatesFound";
     public static boolean revealAllGates = Global.getSettings().getBoolean("AddInactiveGatesToIntel");
     public static boolean scanAllGates = Global.getSettings().getBoolean("ScanAllGates");
-    List<LocationAPI> systemsWithMarketList = new ArrayList<>();
-    List<SectorEntityToken> unscannedGates = new ArrayList<>();
+    HashSet<LocationAPI> systemsWithMarkets = new HashSet<>();
     private static final Logger log = Global.getLogger(data.campaign.econ.abilities.GateScanner.class);
     static {log.setLevel(Level.ALL);}
     boolean gateScanPrimed;
 
-    @Override
-    protected void activateImpl() {
+    final float secondsBetweenChecks = 30;
+    float secondsSinceLastCheck = 0;
 
-    }
+    @Override
+    protected void activateImpl() {}
 
     @Override
     protected void applyEffect(float amount, float level) {
         long startTime = System.nanoTime();
-        for (LocationAPI systemWithMarket : Global.getSector().getEconomy().getStarSystemsWithMarkets()) {
-            for (MarketAPI market : Global.getSector().getEconomy().getMarkets(systemWithMarket)) {
-                if (!market.isHidden() && !systemsWithMarketList.contains(systemWithMarket)) {
-                    systemsWithMarketList.add(systemWithMarket);
-                    break;
-                }
-            }
-        }
+        systemsWithMarkets = generateMarketSystemsHashset();
         String gateStatusString = "null";
         for (SectorEntityToken gate : Global.getSector().getCustomEntitiesWithTag(Tags.GATE)) {
             boolean gateScanStatus = gate.getMemoryWithoutUpdate().getBoolean(GateEntityPlugin.GATE_SCANNED);
             boolean revealThatGate = false;
             try {
-                if ((systemsWithMarketList.contains(gate.getContainingLocation()) && !gateScanStatus)
+                if ((systemsWithMarkets.contains(gate.getContainingLocation()) && !gateScanStatus)
                         || (scanAllGates && !gateScanStatus)) {
                     gate.getMemory().set(GateEntityPlugin.GATE_SCANNED, true);
                     GateCMD.notifyScanned(gate);
@@ -81,29 +73,34 @@ public class GateScanner extends BaseDurationAbility {
                 log.debug(gate.getName() + " in " + gate.getContainingLocation().getName() + gateStatusString);
             }
         }
-        systemsWithMarketList.clear();
-        unscannedGates.clear();
         Global.getSector().getMemoryWithoutUpdate().set(UNSCANNED_GATES, false);
+        systemsWithMarkets.clear();
         long elapsedTime = System.nanoTime() - startTime;
         log.debug("It took " + elapsedTime / pow(10, 9) + " seconds (" + elapsedTime + " nanoseconds) to execute the gate scan.");
     }
 
     @Override
-    protected void deactivateImpl() {
-
-    }
+    protected void deactivateImpl() {}
 
     @Override
-    protected void cleanupImpl() {
+    protected void cleanupImpl() {}
 
+    @Override
+    public void advance(float amount) {
+        super.advance(amount);
+        secondsSinceLastCheck += amount;
+        if (secondsSinceLastCheck > secondsBetweenChecks) {
+            long startUseableCheck = System.nanoTime();
+            checkForGates();
+            secondsSinceLastCheck = 0;
+            systemsWithMarkets.clear();
+            long endUseableCheck = System.nanoTime() - startUseableCheck;
+            log.debug("CheckForGates() took " + endUseableCheck/pow(10, 9) + " seconds (" + endUseableCheck + " nanoseconds) to complete.");
+        }
     }
 
     @Override
     public boolean isUsable() {
-//        long startUseableCheck = System.nanoTime();
-        checkForGates();
-//        long endUseableCheck = System.nanoTime() - startUseableCheck;
-//        log.debug("isUsable() took " + endUseableCheck/pow(10, 9) + " seconds (" + endUseableCheck + " nanoseconds) to check.");
         return Global.getSector().getMemoryWithoutUpdate().getBoolean(GateEntityPlugin.CAN_SCAN_GATES)
                 && Global.getSector().getMemoryWithoutUpdate().getBoolean(GateEntityPlugin.GATES_ACTIVE)
                 && Global.getSector().getMemoryWithoutUpdate().getBoolean(UNSCANNED_GATES);
@@ -156,29 +153,31 @@ public class GateScanner extends BaseDurationAbility {
         return false;
     }
 
-    public void checkForGates(){
+    public HashSet<LocationAPI> generateMarketSystemsHashset() {
         for (LocationAPI systemWithMarket : Global.getSector().getEconomy().getStarSystemsWithMarkets()) {
-            if (!systemsWithMarketList.contains(systemWithMarket)) {
+            if (!systemsWithMarkets.contains(systemWithMarket)) {
                 for (MarketAPI market : Global.getSector().getEconomy().getMarkets(systemWithMarket)) {
                     if (!market.isHidden()) {
-                        systemsWithMarketList.add(systemWithMarket);
+                        systemsWithMarkets.add(systemWithMarket);
                         break;
                     }
                 }
             }
         }
-        if (unscannedGates.isEmpty()){
-            for (SectorEntityToken gate : Global.getSector().getCustomEntitiesWithTag(Tags.GATE)) {
-                if (!gate.getMemoryWithoutUpdate().getBoolean(GateEntityPlugin.GATE_SCANNED) && !unscannedGates.contains(gate)) {
-                    unscannedGates.add(gate);
+        return systemsWithMarkets;
+    }
+
+    public void checkForGates(){
+        systemsWithMarkets = generateMarketSystemsHashset();
+        for (SectorEntityToken gate : Global.getSector().getCustomEntitiesWithTag(Tags.GATE)) {
+            if (!gate.getMemoryWithoutUpdate().getBoolean(GateEntityPlugin.GATE_SCANNED)) {
+                if (scanAllGates) {
+                    Global.getSector().getMemoryWithoutUpdate().set(UNSCANNED_GATES, true);
+                    return;
+                } else if (systemsWithMarkets.contains(gate.getContainingLocation())) {
+                    Global.getSector().getMemoryWithoutUpdate().set(UNSCANNED_GATES, true);
+                    return;
                 }
-            }
-        }
-        for (SectorEntityToken gate : unscannedGates) {
-            if (scanAllGates) {
-                Global.getSector().getMemoryWithoutUpdate().set(UNSCANNED_GATES, true);
-            } else if (systemsWithMarketList.contains(gate.getContainingLocation())) {
-                Global.getSector().getMemoryWithoutUpdate().set(UNSCANNED_GATES, true);
             }
         }
     }

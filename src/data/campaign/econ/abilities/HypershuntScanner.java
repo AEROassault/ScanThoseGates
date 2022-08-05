@@ -1,6 +1,5 @@
 package data.campaign.econ.abilities;
 
-import CaptainsLog.campaign.intel.UnremovableIntel;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -10,7 +9,7 @@ import com.fs.starfarer.api.impl.campaign.abilities.BaseDurationAbility;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import data.campaign.intel.UnremovableIntelShunt;
+import data.campaign.intel.CoronalHypershuntIntel;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -50,8 +49,7 @@ public class HypershuntScanner extends BaseDurationAbility {
 
     @Override
     public boolean isUsable() {
-        return Global.getSettings().getModManager().isModEnabled("CaptainsLog")
-                && Global.getSector().getMemoryWithoutUpdate().getBoolean(CAN_SCAN_HYPERSHUNTS);
+        return Global.getSector().getMemoryWithoutUpdate().getBoolean(CAN_SCAN_HYPERSHUNTS);
     }
 
     @Override
@@ -76,14 +74,14 @@ public class HypershuntScanner extends BaseDurationAbility {
 
     public static boolean tryCreateHypershuntReport(SectorEntityToken hypershunt, Logger log, boolean showMessage) {
         IntelManagerAPI intelManager = Global.getSector().getIntelManager();
-        for (IntelInfoPlugin intel : intelManager.getIntel(UnremovableIntel.class)) {
-            UnremovableIntel hs = (UnremovableIntel) intel;
+        for (IntelInfoPlugin intel : intelManager.getIntel(CoronalHypershuntIntel.class)) {
+            CoronalHypershuntIntel hs = (CoronalHypershuntIntel) intel;
             if (hs.getEntity() == hypershunt) {
                 return false; // report exists
             }
         }
 
-        UnremovableIntelShunt report = new UnremovableIntelShunt(hypershunt);
+        CoronalHypershuntIntel report = new CoronalHypershuntIntel(hypershunt);
         report.setNew(showMessage);
         intelManager.addIntel(report, !showMessage);
         log.info("Created intel report for hypershunt in " + hypershunt.getStarSystem());
