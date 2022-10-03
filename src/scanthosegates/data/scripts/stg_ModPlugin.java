@@ -1,12 +1,12 @@
-package data.scripts;
+package scanthosegates.data.scripts;
 
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CharacterDataAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import data.campaign.econ.abilities.CryosleeperScanner;
-import data.campaign.econ.abilities.GateScanner;
-import data.campaign.econ.abilities.HypershuntScanner;
+import scanthosegates.data.campaign.econ.abilities.CryosleeperScanner;
+import scanthosegates.data.campaign.econ.abilities.GateScanner;
+import scanthosegates.data.campaign.econ.abilities.HypershuntScanner;
 
 public class stg_ModPlugin extends BaseModPlugin {
     public static final String INTEL_MEGASTRUCTURES = "Megastructures";

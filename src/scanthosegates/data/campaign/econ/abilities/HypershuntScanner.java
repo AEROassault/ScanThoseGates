@@ -1,4 +1,4 @@
-package data.campaign.econ.abilities;
+package scanthosegates.data.campaign.econ.abilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
@@ -9,15 +9,15 @@ import com.fs.starfarer.api.impl.campaign.abilities.BaseDurationAbility;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import data.campaign.intel.CoronalHypershuntIntel;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import scanthosegates.data.campaign.intel.CoronalHypershuntIntel;
 
 
 public class HypershuntScanner extends BaseDurationAbility {
     public static String CAN_SCAN_HYPERSHUNTS = "$HypershuntScannerAllowed";
 
-    private static final Logger log = Global.getLogger(data.campaign.econ.abilities.HypershuntScanner.class);
+    private static final Logger log = Global.getLogger(scanthosegates.data.campaign.econ.abilities.HypershuntScanner.class);
     static {log.setLevel(Level.ALL);}
 
     @Override

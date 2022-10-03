@@ -1,9 +1,9 @@
-package data.campaign.intel.button;
+package scanthosegates.data.campaign.intel.button;
 
 import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import data.campaign.intel.CustomMessageIntel;
 import org.lwjgl.input.Keyboard;
+import scanthosegates.data.campaign.intel.CustomMessageIntel;
 
 public class ToggleCustom implements IntelButton {
 

@@ -1,4 +1,4 @@
-package data.campaign.econ.abilities;
+package scanthosegates.data.campaign.econ.abilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
@@ -25,7 +25,7 @@ public class GateScanner extends BaseDurationAbility {
     public static boolean revealAllGates = Global.getSettings().getBoolean("AddInactiveGatesToIntel");
     public static boolean scanAllGates = Global.getSettings().getBoolean("ScanAllGates");
     HashSet<LocationAPI> systemsWithMarkets = new HashSet<>();
-    private static final Logger log = Global.getLogger(data.campaign.econ.abilities.GateScanner.class);
+    private static final Logger log = Global.getLogger(scanthosegates.data.campaign.econ.abilities.GateScanner.class);
     static {log.setLevel(Level.ALL);}
     boolean gateScanPrimed;
     final float checksReportInterval = 60;
@@ -38,47 +38,50 @@ public class GateScanner extends BaseDurationAbility {
 
     @Override
     protected void applyEffect(float amount, float level) {
-        long startTime = System.nanoTime();
-        systemsWithMarkets = generateMarketSystemsHashset();
-        String gateStatusString = "null";
-        for (SectorEntityToken gate : Global.getSector().getCustomEntitiesWithTag(Tags.GATE)) {
-            boolean gateScanStatus = gate.getMemoryWithoutUpdate().getBoolean(GateEntityPlugin.GATE_SCANNED);
-            boolean revealThatGate = false;
-            try {
-                if ((systemsWithMarkets.contains(gate.getContainingLocation()) && !gateScanStatus)
-                        || (scanAllGates && !gateScanStatus)) {
-                    gate.getMemory().set(GateEntityPlugin.GATE_SCANNED, true);
-                    GateCMD.notifyScanned(gate);
-                    gateStatusString = " is activated.";
-                    revealThatGate = true;
-                } else if (gateScanStatus) {
-                    gateStatusString = " is already scanned, ignoring.";
-                } else {
-                    gateStatusString = " is in a marketless system, ignoring.";
-                }
-            } catch (Exception CannotScanGate) {
-                gateStatusString = " IS BROKEN. Exception: " + CannotScanGate;
-                revealThatGate = true;
-            } finally {
+        if (Global.getSector().getMemoryWithoutUpdate().getBoolean(UNSCANNED_GATES)) {
+            long startTime = System.nanoTime();
+            systemsWithMarkets = generateMarketSystemsHashset();
+            String gateStatusString = "null";
+            for (SectorEntityToken gate : Global.getSector().getCustomEntitiesWithTag(Tags.GATE)) {
+                boolean gateScanStatus = gate.getMemoryWithoutUpdate().getBoolean(GateEntityPlugin.GATE_SCANNED);
+                boolean revealThatGate = false;
                 try {
-                    if (!doesGateIntelExist(gate)) {
-                        if (revealAllGates) {
-                            Global.getSector().getIntelManager().addIntel(new GateIntel(gate));
-                        } else if (revealThatGate) {
-                            Global.getSector().getIntelManager().addIntel(new GateIntel(gate));
-                        }
+                    if ((systemsWithMarkets.contains(gate.getContainingLocation()) && !gateScanStatus)
+                            || (scanAllGates && !gateScanStatus)) {
+                        gate.getMemory().set(GateEntityPlugin.GATE_SCANNED, true);
+                        GateCMD.notifyScanned(gate);
+                        gateStatusString = " is activated.";
+                        revealThatGate = true;
+                    } else if (gateScanStatus) {
+                        gateStatusString = " is already scanned, ignoring.";
+                    } else {
+                        gateStatusString = " is in a marketless system, ignoring.";
                     }
-                } catch (Exception CannotAddGateIntel) {
-                    log.debug(gate.getName() + " in " + gate.getContainingLocation().getName() + " somehow broke the intel system. Exception: " + CannotAddGateIntel);
+                } catch (Exception CannotScanGate) {
+                    gateStatusString = " IS BROKEN. Exception: " + CannotScanGate;
+                    revealThatGate = true;
+                } finally {
+                    try {
+                        if (!doesGateIntelExist(gate)) {
+                            if (revealAllGates) {
+                                Global.getSector().getIntelManager().addIntel(new GateIntel(gate));
+                            } else if (revealThatGate) {
+                                Global.getSector().getIntelManager().addIntel(new GateIntel(gate));
+                            }
+                        }
+                    } catch (Exception CannotAddGateIntel) {
+                        log.debug(gate.getName() + " in " + gate.getContainingLocation().getName() + " somehow broke the intel system. Exception: " + CannotAddGateIntel);
+                    }
+                    log.debug(gate.getName() + " in " + gate.getContainingLocation().getName() + gateStatusString);
                 }
-                log.debug(gate.getName() + " in " + gate.getContainingLocation().getName() + gateStatusString);
             }
+            Global.getSector().getMemoryWithoutUpdate().set(UNSCANNED_GATES, false);
+            systemsWithMarkets.clear();
+            long elapsedTime = System.nanoTime() - startTime;
+            log.debug("It took " + elapsedTime / pow(10, 9) + " seconds (" + elapsedTime / pow(10, 6) + " milliseconds or "
+                    + elapsedTime + " nanoseconds) to execute the gate scan.");
+
         }
-        Global.getSector().getMemoryWithoutUpdate().set(UNSCANNED_GATES, false);
-        systemsWithMarkets.clear();
-        long elapsedTime = System.nanoTime() - startTime;
-        log.debug("It took " + elapsedTime / pow(10, 9) + " seconds (" + elapsedTime/pow(10, 6) + " milliseconds or "
-                + elapsedTime + " nanoseconds) to execute the gate scan.");
     }
 
     @Override
