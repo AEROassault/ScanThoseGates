@@ -71,7 +71,7 @@ public class CryosleeperScanner extends BaseDurationAbility {
     }
 
     public static boolean tryCreateCryosleeperReportCustom(SectorEntityToken cryosleeper, Logger log, boolean showMessage, boolean listener) {
-        if ((!cryosleeper.hasTag(Tags.CORONAL_TAP) || cryosleeper.hasSensorProfile() || cryosleeper.isDiscoverable()) && listener){
+        if ((!cryosleeper.hasTag(Tags.CRYOSLEEPER) || cryosleeper.hasSensorProfile() || cryosleeper.isDiscoverable()) && listener){
             return false;
         }
 
