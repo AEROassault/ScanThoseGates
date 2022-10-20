@@ -7,6 +7,8 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import scanthosegates.data.campaign.econ.abilities.CryosleeperScanner;
 import scanthosegates.data.campaign.econ.abilities.GateScanner;
 import scanthosegates.data.campaign.econ.abilities.HypershuntScanner;
+import scanthosegates.data.campaign.listeners.RelocationListener;
+import scanthosegates.data.campaign.listeners.SalvagingListener;
 
 public class stg_ModPlugin extends BaseModPlugin {
     public static final String INTEL_MEGASTRUCTURES = "Megastructures";
@@ -15,6 +17,7 @@ public class stg_ModPlugin extends BaseModPlugin {
     public void onGameLoad(boolean newGame){
         MemoryAPI sectorMemory = Global.getSector().getMemoryWithoutUpdate();
         CharacterDataAPI characterData = Global.getSector().getCharacterData();
+
         if (!sectorMemory.contains(GateScanner.UNSCANNED_GATES)) {
             sectorMemory.set(GateScanner.UNSCANNED_GATES, true);
         }
@@ -24,6 +27,7 @@ public class stg_ModPlugin extends BaseModPlugin {
         if (!sectorMemory.contains(CryosleeperScanner.CAN_SCAN_CRYOSLEEPERS)) {
             sectorMemory.set(CryosleeperScanner.CAN_SCAN_CRYOSLEEPERS, true);
         }
+
         if (!characterData.getAbilities().contains("stg_GateScanner")) {
             characterData.addAbility("stg_GateScanner");
         }
@@ -33,5 +37,8 @@ public class stg_ModPlugin extends BaseModPlugin {
         if (!characterData.getAbilities().contains("stg_CryosleeperScanner")) {
             characterData.addAbility("stg_CryosleeperScanner");
         }
+
+        Global.getSector().getListenerManager().addListener(new RelocationListener(), true);
+        Global.getSector().getListenerManager().addListener(new SalvagingListener(), true);
     }
 }

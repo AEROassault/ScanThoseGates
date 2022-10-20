@@ -29,7 +29,7 @@ public class HypershuntScanner extends BaseDurationAbility {
     protected void applyEffect(float amount, float level) {
         if (Global.getSector().getMemoryWithoutUpdate().getBoolean(CAN_SCAN_HYPERSHUNTS)){
             for (SectorEntityToken hypershunt : Global.getSector().getCustomEntitiesWithTag(Tags.CORONAL_TAP)){
-                if (tryCreateHypershuntReport(hypershunt, log, true)
+                if (tryCreateHypershuntReport(hypershunt, log, true, false)
                         && Global.getSector().getMemoryWithoutUpdate().getBoolean(CAN_SCAN_HYPERSHUNTS)){
                     Global.getSector().getMemoryWithoutUpdate().set(CAN_SCAN_HYPERSHUNTS, false);
                 }
@@ -72,7 +72,11 @@ public class HypershuntScanner extends BaseDurationAbility {
         addIncompatibleToTooltip(tooltip, expanded);
     }
 
-    public static boolean tryCreateHypershuntReport(SectorEntityToken hypershunt, Logger log, boolean showMessage) {
+    public static boolean tryCreateHypershuntReport(SectorEntityToken hypershunt, Logger log, boolean showMessage, boolean listener) {
+        if ((!hypershunt.hasTag(Tags.CORONAL_TAP) || hypershunt.hasSensorProfile() || hypershunt.isDiscoverable()) && listener){
+            return false;
+        }
+
         IntelManagerAPI intelManager = Global.getSector().getIntelManager();
         for (IntelInfoPlugin intel : intelManager.getIntel(CoronalHypershuntIntel.class)) {
             CoronalHypershuntIntel hs = (CoronalHypershuntIntel) intel;

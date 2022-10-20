@@ -28,7 +28,7 @@ public class CryosleeperScanner extends BaseDurationAbility {
     protected void applyEffect(float amount, float level) {
         if (Global.getSector().getMemoryWithoutUpdate().getBoolean(CAN_SCAN_CRYOSLEEPERS)){
             for (SectorEntityToken cryosleeper : Global.getSector().getCustomEntitiesWithTag(Tags.CRYOSLEEPER)){
-                if (tryCreateCryosleeperReportCustom(cryosleeper, log, true)
+                if (tryCreateCryosleeperReportCustom(cryosleeper, log, true, false)
                         && Global.getSector().getMemoryWithoutUpdate().getBoolean(CAN_SCAN_CRYOSLEEPERS)){
                     Global.getSector().getMemoryWithoutUpdate().set(CAN_SCAN_CRYOSLEEPERS, false);
                 }
@@ -70,7 +70,11 @@ public class CryosleeperScanner extends BaseDurationAbility {
         addIncompatibleToTooltip(tooltip, expanded);
     }
 
-    public static boolean tryCreateCryosleeperReportCustom(SectorEntityToken cryosleeper, Logger log, boolean showMessage) {
+    public static boolean tryCreateCryosleeperReportCustom(SectorEntityToken cryosleeper, Logger log, boolean showMessage, boolean listener) {
+        if ((!cryosleeper.hasTag(Tags.CORONAL_TAP) || cryosleeper.hasSensorProfile() || cryosleeper.isDiscoverable()) && listener){
+            return false;
+        }
+
         IntelManagerAPI intelManager = Global.getSector().getIntelManager();
         for (IntelInfoPlugin intel : intelManager.getIntel(CryosleeperIntel.class)) {
             CryosleeperIntel cs = (CryosleeperIntel) intel;
