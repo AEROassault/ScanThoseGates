@@ -1,5 +1,7 @@
-package scanthosegates.data.console;
+package ScanThoseGates.console;
 
+import ScanThoseGates.campaign.intel.CoronalHypershuntIntel;
+import ScanThoseGates.campaign.intel.CryosleeperIntel;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CharacterDataAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
@@ -7,8 +9,6 @@ import com.fs.starfarer.api.campaign.comm.IntelManagerAPI;
 import org.lazywizard.console.BaseCommand;
 import org.lazywizard.console.CommonStrings;
 import org.lazywizard.console.Console;
-import scanthosegates.data.campaign.intel.CoronalHypershuntIntel;
-import scanthosegates.data.campaign.intel.CryosleeperIntel;
 
 import java.util.ArrayList;
 

@@ -1,14 +1,14 @@
-package scanthosegates.data.scripts;
+package ScanThoseGates;
 
+import ScanThoseGates.campaign.econ.abilities.CryosleeperScanner;
+import ScanThoseGates.campaign.econ.abilities.GateScanner;
+import ScanThoseGates.campaign.econ.abilities.HypershuntScanner;
+import ScanThoseGates.campaign.listeners.RelocationListener;
+import ScanThoseGates.campaign.listeners.SalvagingListener;
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CharacterDataAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import scanthosegates.data.campaign.econ.abilities.CryosleeperScanner;
-import scanthosegates.data.campaign.econ.abilities.GateScanner;
-import scanthosegates.data.campaign.econ.abilities.HypershuntScanner;
-import scanthosegates.data.campaign.listeners.RelocationListener;
-import scanthosegates.data.campaign.listeners.SalvagingListener;
 
 public class stg_ModPlugin extends BaseModPlugin {
     public static final String INTEL_MEGASTRUCTURES = "Megastructures";

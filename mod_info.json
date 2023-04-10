@@ -6,5 +6,5 @@
   "description":"Scans all gates that are located in systems with at least one non-hidden market at save start",
   "gameVersion":"0.95.1a-RC6",
   "jars":["jars/ScanThoseGates.jar"],
-  "modPlugin":"scanthosegates.data.scripts.stg_ModPlugin"
+  "modPlugin":"ScanThoseGates.stg_ModPlugin"
 }

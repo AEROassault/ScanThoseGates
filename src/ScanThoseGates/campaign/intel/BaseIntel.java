@@ -1,12 +1,12 @@
-package scanthosegates.data.campaign.intel;
+package ScanThoseGates.campaign.intel;
 
+import ScanThoseGates.campaign.intel.button.IntelButton;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import scanthosegates.data.campaign.intel.button.IntelButton;
 
 public abstract class BaseIntel extends BaseIntelPlugin {
 

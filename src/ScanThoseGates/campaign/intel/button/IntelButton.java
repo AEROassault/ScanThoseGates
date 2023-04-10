@@ -1,4 +1,4 @@
-package scanthosegates.data.campaign.intel.button;
+package ScanThoseGates.campaign.intel.button;
 
 import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;

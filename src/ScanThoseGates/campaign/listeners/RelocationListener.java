@@ -1,5 +1,7 @@
-package scanthosegates.data.campaign.listeners;
+package ScanThoseGates.campaign.listeners;
 
+import ScanThoseGates.campaign.econ.abilities.CryosleeperScanner;
+import ScanThoseGates.campaign.econ.abilities.HypershuntScanner;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -7,12 +9,10 @@ import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import scanthosegates.data.campaign.econ.abilities.CryosleeperScanner;
-import scanthosegates.data.campaign.econ.abilities.HypershuntScanner;
 
 public class RelocationListener implements CurrentLocationChangedListener {
 
-    private static final Logger log = Global.getLogger(scanthosegates.data.campaign.listeners.RelocationListener.class);
+    private static final Logger log = Global.getLogger(RelocationListener.class);
     static {log.setLevel(Level.ALL);}
 
     public void reportCurrentLocationChanged(LocationAPI previous, LocationAPI current) {

@@ -1,4 +1,4 @@
-package scanthosegates.data.campaign.econ.abilities;
+package ScanThoseGates.campaign.econ.abilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
@@ -25,7 +25,7 @@ public class GateScanner extends BaseDurationAbility {
     public static boolean revealAllGates = Global.getSettings().getBoolean("AddInactiveGatesToIntel");
     public static boolean scanAllGates = Global.getSettings().getBoolean("ScanAllGates");
     HashSet<LocationAPI> systemsWithMarkets = new HashSet<>();
-    private static final Logger log = Global.getLogger(scanthosegates.data.campaign.econ.abilities.GateScanner.class);
+    private static final Logger log = Global.getLogger(GateScanner.class);
     static {log.setLevel(Level.ALL);}
     boolean gateScanPrimed;
     final float checksReportInterval = 60;
