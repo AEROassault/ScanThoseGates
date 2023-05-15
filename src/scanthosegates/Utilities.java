@@ -1,4 +1,4 @@
-package scanthosegates.scripts;
+package scanthosegates;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
