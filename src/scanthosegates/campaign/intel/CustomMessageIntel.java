@@ -1,9 +1,9 @@
-package ScanThoseGates.campaign.intel;
+package scanthosegates.campaign.intel;
 
-import ScanThoseGates.campaign.intel.button.IgnoreCustom;
-import ScanThoseGates.campaign.intel.button.LayInCourse;
-import ScanThoseGates.campaign.intel.button.ToggleCustom;
-import ScanThoseGates.scripts.stg_Utilities;
+import scanthosegates.campaign.intel.button.IgnoreCustom;
+import scanthosegates.campaign.intel.button.LayInCourse;
+import scanthosegates.campaign.intel.button.ToggleCustom;
+import scanthosegates.scripts.Utilities;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignClockAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
@@ -36,7 +36,7 @@ public class CustomMessageIntel extends BaseIntel {
     }
 
     private String getLocation() {
-        return stg_Utilities.getSystemNameOrHyperspace(locationCreated);
+        return Utilities.getSystemNameOrHyperspace(locationCreated);
     }
 
     public void toggleShow() {

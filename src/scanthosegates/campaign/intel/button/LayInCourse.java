@@ -1,4 +1,4 @@
-package ScanThoseGates.campaign.intel.button;
+package scanthosegates.campaign.intel.button;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorEntityToken;

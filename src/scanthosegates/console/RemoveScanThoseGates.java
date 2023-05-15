@@ -1,7 +1,7 @@
-package ScanThoseGates.console;
+package scanthosegates.console;
 
-import ScanThoseGates.campaign.intel.CoronalHypershuntIntel;
-import ScanThoseGates.campaign.intel.CryosleeperIntel;
+import scanthosegates.campaign.intel.CoronalHypershuntIntel;
+import scanthosegates.campaign.intel.CryosleeperIntel;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CharacterDataAPI;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;

@@ -1,6 +1,6 @@
-package ScanThoseGates.campaign.intel;
+package scanthosegates.campaign.intel;
 
-import ScanThoseGates.campaign.intel.button.IntelButton;
+import scanthosegates.campaign.intel.button.IntelButton;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.ButtonAPI;

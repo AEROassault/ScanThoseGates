@@ -2,9 +2,9 @@
   "id":"scan_those_gates",
   "name":"Scan Those Gates",
   "author":"AERO",
-  "version":"1.5.1",
-  "description":"Scans all gates that are located in systems with at least one non-hidden market at save start",
-  "gameVersion":"0.95.1a-RC6",
+  "version":"1.5.2",
+  "description":"Adds abilities to scan gates and reveal megastructure locations.",
+  "gameVersion":"0.96a-RC9",
   "jars":["jars/ScanThoseGates.jar"],
-  "modPlugin":"ScanThoseGates.stg_ModPlugin"
+  "modPlugin":"scanthosegates.ModPlugin"
 }

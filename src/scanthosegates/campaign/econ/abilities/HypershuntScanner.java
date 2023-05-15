@@ -1,6 +1,6 @@
-package ScanThoseGates.campaign.econ.abilities;
+package scanthosegates.campaign.econ.abilities;
 
-import ScanThoseGates.campaign.intel.CoronalHypershuntIntel;
+import scanthosegates.campaign.intel.CoronalHypershuntIntel;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;

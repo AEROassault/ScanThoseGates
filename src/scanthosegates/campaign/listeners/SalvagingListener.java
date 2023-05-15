@@ -1,7 +1,7 @@
-package ScanThoseGates.campaign.listeners;
+package scanthosegates.campaign.listeners;
 
-import ScanThoseGates.campaign.econ.abilities.CryosleeperScanner;
-import ScanThoseGates.campaign.econ.abilities.HypershuntScanner;
+import scanthosegates.campaign.econ.abilities.CryosleeperScanner;
+import scanthosegates.campaign.econ.abilities.HypershuntScanner;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.listeners.DiscoverEntityListener;

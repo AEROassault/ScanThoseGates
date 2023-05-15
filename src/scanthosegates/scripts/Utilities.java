@@ -1,11 +1,11 @@
-package ScanThoseGates.scripts;
+package scanthosegates.scripts;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.util.Misc;
 
-public class stg_Utilities {
+public class Utilities {
     public static boolean isInUnexploredSystem(SectorEntityToken token) {
         if (token.getStarSystem() != null) {
             return !token.getStarSystem().isEnteredByPlayer();

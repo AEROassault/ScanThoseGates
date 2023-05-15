@@ -1,4 +1,4 @@
-package ScanThoseGates.campaign.econ.abilities;
+package scanthosegates.campaign.econ.abilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;

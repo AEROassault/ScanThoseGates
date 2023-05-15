@@ -1,7 +1,7 @@
-package ScanThoseGates.campaign.intel;
+package scanthosegates.campaign.intel;
 
-import ScanThoseGates.campaign.intel.button.LayInCourse;
-import ScanThoseGates.stg_ModPlugin;
+import scanthosegates.ModPlugin;
+import scanthosegates.campaign.intel.button.LayInCourse;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -14,7 +14,7 @@ import java.awt.*;
 import java.util.Set;
 
 public class CoronalHypershuntIntel extends BaseIntel {
-    public static final String INTEL_HYPERSHUNT = stg_ModPlugin.INTEL_MEGASTRUCTURES;
+    public static final String INTEL_HYPERSHUNT = ModPlugin.INTEL_MEGASTRUCTURES;
     private final SectorEntityToken hypershunt;
 
     public CoronalHypershuntIntel(SectorEntityToken hypershunt) {

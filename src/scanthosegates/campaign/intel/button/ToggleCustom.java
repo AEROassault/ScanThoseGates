@@ -1,6 +1,6 @@
-package ScanThoseGates.campaign.intel.button;
+package scanthosegates.campaign.intel.button;
 
-import ScanThoseGates.campaign.intel.CustomMessageIntel;
+import scanthosegates.campaign.intel.CustomMessageIntel;
 import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import org.lwjgl.input.Keyboard;

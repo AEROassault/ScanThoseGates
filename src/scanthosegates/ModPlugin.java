@@ -1,16 +1,16 @@
-package ScanThoseGates;
+package scanthosegates;
 
-import ScanThoseGates.campaign.econ.abilities.CryosleeperScanner;
-import ScanThoseGates.campaign.econ.abilities.GateScanner;
-import ScanThoseGates.campaign.econ.abilities.HypershuntScanner;
-import ScanThoseGates.campaign.listeners.RelocationListener;
-import ScanThoseGates.campaign.listeners.SalvagingListener;
+import scanthosegates.campaign.econ.abilities.CryosleeperScanner;
+import scanthosegates.campaign.econ.abilities.GateScanner;
+import scanthosegates.campaign.econ.abilities.HypershuntScanner;
+import scanthosegates.campaign.listeners.RelocationListener;
+import scanthosegates.campaign.listeners.SalvagingListener;
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CharacterDataAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 
-public class stg_ModPlugin extends BaseModPlugin {
+public class ModPlugin extends BaseModPlugin {
     public static final String INTEL_MEGASTRUCTURES = "Megastructures";
 
     @Override
