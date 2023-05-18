@@ -19,11 +19,11 @@ import org.apache.log4j.Logger;
 import java.util.HashSet;
 
 import static java.lang.Math.pow;
+import static scanthosegates.ModPlugin.RevealAllGates;
+import static scanthosegates.ModPlugin.ActivateAllGates;
 
 public class GateScanner extends BaseDurationAbility {
     public static String UNSCANNED_GATES = "$UnscannedGatesFound";
-    public static boolean revealAllGates = Global.getSettings().getBoolean("RevealInactiveGates");
-    public static boolean scanAllGates = Global.getSettings().getBoolean("ScanInactiveGates");
     HashSet<LocationAPI> systemsWithMarkets = new HashSet<>();
     private static final Logger log = Global.getLogger(GateScanner.class);
     static {log.setLevel(Level.ALL);}
@@ -47,7 +47,7 @@ public class GateScanner extends BaseDurationAbility {
                 boolean revealThatGate = false;
                 try {
                     if ((systemsWithMarkets.contains(gate.getContainingLocation()) && !gateScanStatus)
-                            || (scanAllGates && !gateScanStatus)) {
+                            || (ActivateAllGates && !gateScanStatus)) {
                         gate.getMemory().set(GateEntityPlugin.GATE_SCANNED, true);
                         GateCMD.notifyScanned(gate);
                         gateStatusString = " is activated.";
@@ -63,7 +63,7 @@ public class GateScanner extends BaseDurationAbility {
                 } finally {
                     try {
                         if (!doesGateIntelExist(gate)) {
-                            if (revealAllGates) {
+                            if (RevealAllGates) {
                                 Global.getSector().getIntelManager().addIntel(new GateIntel(gate));
                             } else if (revealThatGate) {
                                 Global.getSector().getIntelManager().addIntel(new GateIntel(gate));
@@ -117,7 +117,7 @@ public class GateScanner extends BaseDurationAbility {
     }
 
     @Override
-    public boolean hasTooltip(){return true;}
+    public boolean hasTooltip() {return true;}
 
     public void createTooltip(TooltipMakerAPI tooltip, boolean expanded) {
         gateScanPrimed = Global.getSector().getMemoryWithoutUpdate().getBoolean(GateEntityPlugin.CAN_SCAN_GATES)
@@ -127,11 +127,11 @@ public class GateScanner extends BaseDurationAbility {
         tooltip.addTitle("Remote Gate Scan");
         float pad = 10f;
 
-        if (revealAllGates && !scanAllGates) {
+        if (RevealAllGates && !ActivateAllGates) {
             tooltip.addPara("Scans all gates located in systems with at least one non-hidden market " +
                     "and adds all gates to the intel screen, regardless of market presence in the gate's system.", pad);
         }
-        else if (scanAllGates) {
+        else if (ActivateAllGates) {
             tooltip.addPara("Scans all gates regardless of market presence in the gate's system.", pad);
         }
         else {
@@ -177,11 +177,11 @@ public class GateScanner extends BaseDurationAbility {
         return systemsWithMarkets;
     }
 
-    public void checkForGates(){
+    public void checkForGates() {
         systemsWithMarkets = generateMarketSystemsHashset();
         for (SectorEntityToken gate : Global.getSector().getCustomEntitiesWithTag(Tags.GATE)) {
             if (!gate.getMemoryWithoutUpdate().getBoolean(GateEntityPlugin.GATE_SCANNED)) {
-                if (scanAllGates) {
+                if (ActivateAllGates) {
                     Global.getSector().getMemoryWithoutUpdate().set(UNSCANNED_GATES, true);
                     return;
                 } else if (systemsWithMarkets.contains(gate.getContainingLocation())) {
