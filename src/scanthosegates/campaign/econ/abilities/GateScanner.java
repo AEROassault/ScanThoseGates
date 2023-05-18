@@ -22,8 +22,8 @@ import static java.lang.Math.pow;
 
 public class GateScanner extends BaseDurationAbility {
     public static String UNSCANNED_GATES = "$UnscannedGatesFound";
-    public static boolean revealAllGates = Global.getSettings().getBoolean("AddInactiveGatesToIntel");
-    public static boolean scanAllGates = Global.getSettings().getBoolean("ScanAllGates");
+    public static boolean revealAllGates = Global.getSettings().getBoolean("RevealInactiveGates");
+    public static boolean scanAllGates = Global.getSettings().getBoolean("ScanInactiveGates");
     HashSet<LocationAPI> systemsWithMarkets = new HashSet<>();
     private static final Logger log = Global.getLogger(GateScanner.class);
     static {log.setLevel(Level.ALL);}

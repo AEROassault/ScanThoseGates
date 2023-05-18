@@ -1,5 +1,6 @@
 package scanthosegates;
 
+import lunalib.lunaSettings.LunaSettings;
 import scanthosegates.campaign.econ.abilities.CryosleeperScanner;
 import scanthosegates.campaign.econ.abilities.GateScanner;
 import scanthosegates.campaign.econ.abilities.HypershuntScanner;
@@ -9,9 +10,17 @@ import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CharacterDataAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import java.util.MissingResourceException;
 
 public class ModPlugin extends BaseModPlugin {
+    public static final String ID = "scan_those_gates";
+    public static final String PREFIX = "stg_";
+    static final String LUNALIB_ID = "lunalib";
     public static final String INTEL_MEGASTRUCTURES = "Megastructures";
+
+    public static boolean
+            RevealAllGates = false,
+            ActivateAllGates = false;
 
     @Override
     public void onGameLoad(boolean newGame){
@@ -40,5 +49,10 @@ public class ModPlugin extends BaseModPlugin {
 
         Global.getSector().getListenerManager().addListener(new RelocationListener(), true);
         Global.getSector().getListenerManager().addListener(new SalvagingListener(), true);
+    }
+
+    @Override
+    public void onApplicationLoad() {
+
     }
 }
