@@ -7,7 +7,7 @@
   
   "graphics":{
 	  "misc":{
-		  "lunaSettingsIcon":"graphics/ScanThoseGates/stations/gate_active.png"
+		  "lunaSettingsIcon":"graphics/ScanThoseGates/icons/lunaSettings/gate_active.png"
 	  }
   }
 }
