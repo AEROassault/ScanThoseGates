@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="ScanThoseGates">
+    <output-path>$PROJECT_DIR$/jars</output-path>
+    <root id="archive" name="ScanThoseGates.jar">
+      <element id="module-output" name="ScanThoseGates" />
+    </root>
+  </artifact>
+</component>
