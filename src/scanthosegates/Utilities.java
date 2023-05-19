@@ -24,20 +24,4 @@ public class Utilities {
 
         return "Hyperspace";
     }
-
-    public static boolean isInUnexploredSystem(SectorEntityToken token) {
-        if (token.getStarSystem() != null) {
-            return !token.getStarSystem().isEnteredByPlayer();
-        } else {
-            return false;
-        }
-    }
-
-    public static String getSystemNameOrHyperspaceBase(SectorEntityToken token) {
-        if (token.getStarSystem() != null) {
-            return token.getStarSystem().getBaseName();
-        } else {
-            return "Hyperspace";
-        }
-    }
 }
