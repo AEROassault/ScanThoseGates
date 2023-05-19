@@ -74,6 +74,8 @@ public class ModPlugin extends BaseModPlugin {
 
     @Override
     public void onApplicationLoad() {
-        LunaSettings.addSettingsListener(new LunaSettingsChangedListener());
+        if (Global.getSettings().getModManager().isModEnabled(LUNALIB_ID)) {
+            LunaSettings.addSettingsListener(new LunaSettingsChangedListener());
+        }
     }
 }
