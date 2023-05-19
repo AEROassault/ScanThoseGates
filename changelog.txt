@@ -1,5 +1,6 @@
 Version 1.5.3
 - LunaSettings integration
+- Allow gate scan to add inactive gates to intel without activating them
 
 Version 1.5.2
 - Updated for Starsector version 0.96a.
