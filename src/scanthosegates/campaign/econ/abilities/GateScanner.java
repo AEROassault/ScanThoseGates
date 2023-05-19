@@ -19,8 +19,8 @@ import org.apache.log4j.Logger;
 import java.util.HashSet;
 
 import static java.lang.Math.pow;
-import static scanthosegates.ModPlugin.RevealAllGates;
 import static scanthosegates.ModPlugin.ActivateAllGates;
+import static scanthosegates.ModPlugin.RevealAllGates;
 
 public class GateScanner extends BaseDurationAbility {
     public static String UNSCANNED_GATES = "$UnscannedGatesFound";

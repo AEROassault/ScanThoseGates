@@ -1,7 +1,5 @@
 package scanthosegates.campaign.listeners;
 
-import scanthosegates.campaign.econ.abilities.CryosleeperScanner;
-import scanthosegates.campaign.econ.abilities.HypershuntScanner;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.LocationAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
@@ -9,6 +7,8 @@ import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import scanthosegates.campaign.econ.abilities.CryosleeperScanner;
+import scanthosegates.campaign.econ.abilities.HypershuntScanner;
 
 public class RelocationListener implements CurrentLocationChangedListener {
 

@@ -1,7 +1,5 @@
 package scanthosegates;
 
-import com.fs.starfarer.api.Global;
-import lunalib.lunaSettings.LunaSettings;
 import lunalib.lunaSettings.LunaSettingsListener;
 
 public class LunaSettingsChangedListener implements LunaSettingsListener {

@@ -1,9 +1,5 @@
 package scanthosegates.campaign.intel;
 
-import scanthosegates.campaign.intel.button.IgnoreCustom;
-import scanthosegates.campaign.intel.button.LayInCourse;
-import scanthosegates.campaign.intel.button.ToggleCustom;
-import scanthosegates.Utilities;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignClockAPI;
 import com.fs.starfarer.api.campaign.LocationAPI;
@@ -11,6 +7,10 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import scanthosegates.Utilities;
+import scanthosegates.campaign.intel.button.IgnoreCustom;
+import scanthosegates.campaign.intel.button.LayInCourse;
+import scanthosegates.campaign.intel.button.ToggleCustom;
 
 import java.awt.*;
 import java.util.Set;

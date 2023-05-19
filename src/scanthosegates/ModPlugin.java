@@ -1,5 +1,9 @@
 package scanthosegates;
 
+import com.fs.starfarer.api.BaseModPlugin;
+import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CharacterDataAPI;
+import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import lunalib.lunaSettings.LunaSettings;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -8,10 +12,7 @@ import scanthosegates.campaign.econ.abilities.GateScanner;
 import scanthosegates.campaign.econ.abilities.HypershuntScanner;
 import scanthosegates.campaign.listeners.RelocationListener;
 import scanthosegates.campaign.listeners.SalvagingListener;
-import com.fs.starfarer.api.BaseModPlugin;
-import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CharacterDataAPI;
-import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+
 import java.util.MissingResourceException;
 
 public class ModPlugin extends BaseModPlugin {
