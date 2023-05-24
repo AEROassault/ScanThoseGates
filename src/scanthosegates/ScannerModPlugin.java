@@ -4,6 +4,7 @@ import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CharacterDataAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import lunalib.lunaSettings.LunaSettings;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import scanthosegates.campaign.econ.abilities.CryosleeperScanner;
@@ -14,16 +15,19 @@ import scanthosegates.campaign.listeners.SalvagingListener;
 
 import java.util.MissingResourceException;
 
+import static scanthosegates.LunaSettingsChangedListener.addToManagerIfNeeded;
+
 public class ScannerModPlugin extends BaseModPlugin {
     private static final Logger log = Global.getLogger(ScannerModPlugin.class);
     static {log.setLevel(Level.ALL);}
     public static final String ID = "scan_those_gates";
-    public static final String PREFIX = "stg_";
-    static final String LUNALIB_ID = "lunalib";
+    public static final String MOD_PREFIX = "stg_";
     public static final String INTEL_MEGASTRUCTURES = "Megastructures";
+    public static boolean lunaLibEnabled = Global.getSettings().getModManager().isModEnabled("lunalib");
+
     static <T> T get(String id, Class<T> type) throws Exception {
-        if (Global.getSettings().getModManager().isModEnabled(LUNALIB_ID)) {
-            if (type == Boolean.class) return type.cast(lunalib.lunaSettings.LunaSettings.getBoolean(ScannerModPlugin.ID, PREFIX + id));
+        if (lunaLibEnabled) {
+            if (type == Boolean.class) return type.cast(LunaSettings.getBoolean(ScannerModPlugin.ID, MOD_PREFIX + id));
         } else {
             if (type == Boolean.class) return type.cast(Global.getSettings().getBoolean(id));
         }
@@ -38,9 +42,9 @@ public class ScannerModPlugin extends BaseModPlugin {
             log.debug("Failed to read lunaSettings. Exception: " + e);
         }
     }
-    public static boolean
-            RevealAllGates = false,
-            ActivateAllGates = false;
+
+    public static boolean RevealAllGates = false;
+    public static boolean ActivateAllGates = false;
 
     @Override
     public void onGameLoad(boolean newGame){
@@ -69,12 +73,14 @@ public class ScannerModPlugin extends BaseModPlugin {
 
         Global.getSector().getListenerManager().addListener(new RelocationListener(), true);
         Global.getSector().getListenerManager().addListener(new SalvagingListener(), true);
+
+        readSettings();
     }
 
     @Override
-    public void onApplicationLoad() {
-        if (Global.getSettings().getModManager().isModEnabled(LUNALIB_ID)) {
-            lunalib.lunaSettings.LunaSettings.addSettingsListener(new LunaSettingsChangedListener());
+    public void onApplicationLoad() throws Exception {
+        if (lunaLibEnabled){
+            addToManagerIfNeeded();
         }
     }
 }
