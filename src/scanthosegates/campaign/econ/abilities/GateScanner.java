@@ -157,10 +157,10 @@ public class GateScanner extends BaseDurationAbility {
         for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(GateIntel.class)){
             GateIntel gi = (GateIntel) intel;
             if (gi.getGate() == gate) {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     public HashSet<LocationAPI> generateMarketSystemsHashset() {
