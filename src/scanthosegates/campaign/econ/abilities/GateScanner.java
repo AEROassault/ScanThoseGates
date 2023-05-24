@@ -62,7 +62,7 @@ public class GateScanner extends BaseDurationAbility {
                     revealThatGate = true;
                 } finally {
                     try {
-                        if (!doesGateIntelExist(gate)) {
+                        if (gateIntelDoesNotExist(gate)) {
                             if (RevealAllGates) {
                                 Global.getSector().getIntelManager().addIntel(new GateIntel(gate));
                             } else if (revealThatGate) {
@@ -153,7 +153,7 @@ public class GateScanner extends BaseDurationAbility {
         addIncompatibleToTooltip(tooltip, expanded);
     }
 
-    public boolean doesGateIntelExist(SectorEntityToken gate) {
+    public boolean gateIntelDoesNotExist(SectorEntityToken gate) {
         for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(GateIntel.class)){
             GateIntel gi = (GateIntel) intel;
             if (gi.getGate() == gate) {
@@ -184,7 +184,7 @@ public class GateScanner extends BaseDurationAbility {
                 if (ActivateAllGates) {
                     Global.getSector().getMemoryWithoutUpdate().set(UNSCANNED_GATES, true);
                     return;
-                } else if (RevealAllGates && !doesGateIntelExist(gate)) {
+                } else if (RevealAllGates && gateIntelDoesNotExist(gate)) {
                     Global.getSector().getMemoryWithoutUpdate().set(UNSCANNED_GATES, true);
                     return;
                 } else if (systemsWithMarkets.contains(gate.getContainingLocation())) {
