@@ -1,3 +1,8 @@
+Version 1.5.4
+- Fixed mod crash due to lack of LunaLib soft dependency in some situations
+- Renamed method for checking gate intel and inverted behavior
+- Added gate intel check to make sure scan ability cannot be reactivated if no new gates can be activated or have intel to be added.
+
 Version 1.5.3
 - LunaSettings integration
 - Allow gate scan to add inactive gates to intel without activating them
