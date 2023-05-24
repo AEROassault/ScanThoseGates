@@ -184,7 +184,7 @@ public class GateScanner extends BaseDurationAbility {
                 if (ActivateAllGates) {
                     Global.getSector().getMemoryWithoutUpdate().set(UNSCANNED_GATES, true);
                     return;
-                } else if (RevealAllGates) {
+                } else if (RevealAllGates && !doesGateIntelExist(gate)) {
                     Global.getSector().getMemoryWithoutUpdate().set(UNSCANNED_GATES, true);
                     return;
                 } else if (systemsWithMarkets.contains(gate.getContainingLocation())) {
