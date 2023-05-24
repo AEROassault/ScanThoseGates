@@ -7,14 +7,14 @@ import com.fs.starfarer.api.loading.Description;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import scanthosegates.ModPlugin;
+import scanthosegates.ScannerModPlugin;
 import scanthosegates.campaign.intel.button.LayInCourse;
 
 import java.awt.*;
 import java.util.Set;
 
 public class CryosleeperIntel extends BaseIntel {
-    public static final String INTEL_CRYOSLEEPER = ModPlugin.INTEL_MEGASTRUCTURES;
+    public static final String INTEL_CRYOSLEEPER = ScannerModPlugin.INTEL_MEGASTRUCTURES;
     private final SectorEntityToken cryosleeper;
 
     public CryosleeperIntel(SectorEntityToken cryosleeper) {

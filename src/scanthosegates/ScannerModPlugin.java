@@ -4,7 +4,6 @@ import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CharacterDataAPI;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import lunalib.lunaSettings.LunaSettings;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import scanthosegates.campaign.econ.abilities.CryosleeperScanner;
@@ -15,8 +14,8 @@ import scanthosegates.campaign.listeners.SalvagingListener;
 
 import java.util.MissingResourceException;
 
-public class ModPlugin extends BaseModPlugin {
-    private static final Logger log = Global.getLogger(ModPlugin.class);
+public class ScannerModPlugin extends BaseModPlugin {
+    private static final Logger log = Global.getLogger(ScannerModPlugin.class);
     static {log.setLevel(Level.ALL);}
     public static final String ID = "scan_those_gates";
     public static final String PREFIX = "stg_";
@@ -24,7 +23,7 @@ public class ModPlugin extends BaseModPlugin {
     public static final String INTEL_MEGASTRUCTURES = "Megastructures";
     static <T> T get(String id, Class<T> type) throws Exception {
         if (Global.getSettings().getModManager().isModEnabled(LUNALIB_ID)) {
-            if (type == Boolean.class) return type.cast(LunaSettings.getBoolean(ModPlugin.ID, PREFIX + id));
+            if (type == Boolean.class) return type.cast(lunalib.lunaSettings.LunaSettings.getBoolean(ScannerModPlugin.ID, PREFIX + id));
         } else {
             if (type == Boolean.class) return type.cast(Global.getSettings().getBoolean(id));
         }
@@ -75,7 +74,7 @@ public class ModPlugin extends BaseModPlugin {
     @Override
     public void onApplicationLoad() {
         if (Global.getSettings().getModManager().isModEnabled(LUNALIB_ID)) {
-            LunaSettings.addSettingsListener(new LunaSettingsChangedListener());
+            lunalib.lunaSettings.LunaSettings.addSettingsListener(new LunaSettingsChangedListener());
         }
     }
 }
