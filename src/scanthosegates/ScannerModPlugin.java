@@ -85,7 +85,8 @@ public class ScannerModPlugin extends BaseModPlugin {
             if (requiredLunaLibVersionPresent()) {
                 addToManagerIfNeeded();
             } else {
-                throw new RuntimeException("Using LunaLib with this mod requires at least version 1.7.4.\nUpdate your LunaLib.");
+                throw new RuntimeException("Using LunaLib with this mod requires at least version "
+                        + LUNA_MAJOR + "." + LUNA_MINOR + "." + LUNA_PATCH + " of LunaLib. Update your LunaLib, or else...");
             }
         }
     }
