@@ -1,3 +1,7 @@
+Version 1.5.5
+- Prevent users from using outdated version of LunaLib with mod
+- Fixed spelling error in variable naming
+
 Version 1.5.4
 - Fixed mod crash due to lack of LunaLib soft dependency in some situations
 - Renamed method for checking gate intel and inverted behavior
