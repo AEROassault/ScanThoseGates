@@ -23,7 +23,9 @@ public class ScannerModPlugin extends BaseModPlugin {
     public static final String ID = "scan_those_gates";
     public static final String MOD_PREFIX = "stg_";
     public static final String INTEL_MEGASTRUCTURES = "Megastructures";
-    public static boolean lunaLibEnabled = Global.getSettings().getModManager().isModEnabled("lunalib");
+    public static final String LUNALIB_ID = "lunalib";
+    public static boolean lunaLibEnabled = Global.getSettings().getModManager().isModEnabled(LUNALIB_ID);
+    public static final int LUNA_MAJOR = 1, LUNA_MINOR = 7, LUNA_PATCH = 4;
 
     static <T> T get(String id, Class<T> type) throws Exception {
         if (lunaLibEnabled) {
@@ -78,9 +80,23 @@ public class ScannerModPlugin extends BaseModPlugin {
     }
 
     @Override
-    public void onApplicationLoad() throws Exception {
+    public void onApplicationLoad() {
         if (lunaLibEnabled){
-            addToManagerIfNeeded();
+            if (requiredLunaLibVersionPresent()) {
+                addToManagerIfNeeded();
+            } else {
+                throw new RuntimeException("Using LunaLib with this mod requires at least version 1.7.4.\nUpdate your LunaLib.");
+            }
         }
+    }
+
+    public static boolean requiredLunaLibVersionPresent() {
+        String version = Global.getSettings().getModManager().getModSpec(LUNALIB_ID).getVersion();
+        log.info("LunaLib Version: " + version);
+        String[] temp = version.split("\\.");
+        if (Integer.parseInt(temp[0]) < LUNA_MAJOR) return false;
+        if (Integer.parseInt(temp[1]) < LUNA_MINOR) return false;
+        if (Integer.parseInt(temp[2]) < LUNA_PATCH) return false;
+        return true;
     }
 }
