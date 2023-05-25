@@ -72,13 +72,13 @@ public class GateScanner extends BaseDurationAbility {
                     } catch (Exception CannotAddGateIntel) {
                         log.debug(gate.getName() + " in " + gate.getContainingLocation().getName() + " somehow broke the intel system. Exception: " + CannotAddGateIntel);
                     }
-                    log.debug(gate.getName() + " in " + gate.getContainingLocation().getName() + gateStatusString);
+                    log.info(gate.getName() + " in " + gate.getContainingLocation().getName() + gateStatusString);
                 }
             }
             Global.getSector().getMemoryWithoutUpdate().set(UNSCANNED_GATES, false);
             systemsWithMarkets.clear();
             long elapsedTime = System.nanoTime() - startTime;
-            log.debug("It took " + elapsedTime / pow(10, 9) + " seconds (" + elapsedTime / pow(10, 6) + " milliseconds or "
+            log.info("It took " + elapsedTime / pow(10, 9) + " seconds (" + elapsedTime / pow(10, 6) + " milliseconds or "
                     + elapsedTime + " nanoseconds) to execute the gate scan.");
 
         }
@@ -96,14 +96,14 @@ public class GateScanner extends BaseDurationAbility {
         secondsSinceLastCheck += amount;
         secondsSinceLastReport += amount;
         if (secondsSinceLastCheck > secondsBetweenChecks) {
-            long startUseableCheck = System.nanoTime();
+            long startUsableCheck = System.nanoTime();
             checkForGates();
             secondsSinceLastCheck = 0;
             systemsWithMarkets.clear();
-            long endUseableCheck = System.nanoTime() - startUseableCheck;
+            long endUsableCheck = System.nanoTime() - startUsableCheck;
             if (secondsSinceLastReport > checksReportInterval) {
-                log.debug("CheckForGates() took " + endUseableCheck / pow(10, 9) + " seconds (" + endUseableCheck/pow(10, 6)
-                        + " milliseconds or " + endUseableCheck + " nanoseconds) to complete.");
+                log.info("CheckForGates() took " + endUsableCheck / pow(10, 9) + " seconds (" + endUsableCheck/pow(10, 6)
+                        + " milliseconds or " + endUsableCheck + " nanoseconds) to complete.");
                 secondsSinceLastReport = 0;
             }
         }
