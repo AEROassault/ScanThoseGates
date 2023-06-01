@@ -1,4 +1,4 @@
-package scanthosegates.campaign.listeners;
+package org.aero.scanthosegates.campaign.listeners;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.LocationAPI;
@@ -7,8 +7,8 @@ import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import scanthosegates.campaign.econ.abilities.CryosleeperScanner;
-import scanthosegates.campaign.econ.abilities.HypershuntScanner;
+import org.aero.scanthosegates.campaign.abilities.CryosleeperScanner;
+import org.aero.scanthosegates.campaign.abilities.HypershuntScanner;
 
 public class RelocationListener implements CurrentLocationChangedListener {
 

@@ -1,4 +1,4 @@
-package scanthosegates.campaign.intel;
+package org.aero.scanthosegates.campaign.intel;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
@@ -7,18 +7,18 @@ import com.fs.starfarer.api.loading.Description;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import scanthosegates.ScannerModPlugin;
-import scanthosegates.campaign.intel.button.LayInCourse;
+import org.aero.scanthosegates.ModPlugin;
+import org.aero.scanthosegates.campaign.intel.button.LayInCourse;
 
 import java.awt.*;
 import java.util.Set;
 
-public class CryosleeperIntel extends BaseIntel {
-    public static final String INTEL_CRYOSLEEPER = ScannerModPlugin.INTEL_MEGASTRUCTURES;
-    private final SectorEntityToken cryosleeper;
+public class CoronalHypershuntIntel extends BaseIntel {
+    public static final String INTEL_HYPERSHUNT = ModPlugin.INTEL_MEGASTRUCTURES;
+    private final SectorEntityToken hypershunt;
 
-    public CryosleeperIntel(SectorEntityToken cryosleeper) {
-        this.cryosleeper = cryosleeper;
+    public CoronalHypershuntIntel(SectorEntityToken hypershunt) {
+        this.hypershunt = hypershunt;
     }
 
     public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
@@ -33,43 +33,43 @@ public class CryosleeperIntel extends BaseIntel {
         }
 
         bullet(info);
-        info.addPara(cryosleeper.getStarSystem().getName(), initPad, getBulletColorForMode(mode));
+        info.addPara(hypershunt.getStarSystem().getName(), initPad, getBulletColorForMode(mode));
         unindent(info);
     }
 
     public String getSmallDescriptionTitle() {
-        return "Cryosleeper";
+        return "Coronal Hypershunt";
     }
 
     @Override
     public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
         float opad = 10f;
 
-        Description desc = Global.getSettings().getDescription("derelict_cryosleeper", Description.Type.CUSTOM);
+        Description desc = Global.getSettings().getDescription("coronal_tap", Description.Type.CUSTOM);
 
-        TooltipMakerAPI text = info.beginImageWithText(cryosleeper.getCustomEntitySpec().getSpriteName(), 64);
+        TooltipMakerAPI text = info.beginImageWithText(hypershunt.getCustomEntitySpec().getSpriteName(), 64);
         text.addPara(desc.getText1FirstPara(), Misc.getGrayColor(), opad);
         info.addImageWithText(opad);
 
         info.addPara(
-                "Located in the " + cryosleeper.getStarSystem().getNameWithLowercaseType() + ".",
+                "Located in the " + hypershunt.getStarSystem().getNameWithLowercaseType() + ".",
                 opad,
                 Misc.getPositiveHighlightColor(),
-                cryosleeper.getStarSystem().getBaseName()
+                hypershunt.getStarSystem().getBaseName()
         );
 
-        addGenericButton(info, width, new LayInCourse(cryosleeper));
+        addGenericButton(info, width, new LayInCourse(hypershunt));
     }
 
     @Override
     public String getIcon() {
-        return cryosleeper.getCustomEntitySpec().getIconName();
+        return hypershunt.getCustomEntitySpec().getIconName();
     }
 
     @Override
     public Set<String> getIntelTags(SectorMapAPI map) {
         Set<String> tags = super.getIntelTags(map);
-        tags.add(INTEL_CRYOSLEEPER);
+        tags.add(INTEL_HYPERSHUNT);
 
         return tags;
     }
@@ -81,7 +81,7 @@ public class CryosleeperIntel extends BaseIntel {
 
     @Override
     protected String getName() {
-        return "Cryosleeper Location";
+        return "Coronal Hypershunt Location";
     }
 
     @Override
@@ -91,7 +91,7 @@ public class CryosleeperIntel extends BaseIntel {
 
     @Override
     public boolean shouldRemoveIntel() {
-        return cryosleeper == null || !cryosleeper.isAlive();
+        return hypershunt == null || !hypershunt.isAlive();
     }
 
     @Override
@@ -101,7 +101,7 @@ public class CryosleeperIntel extends BaseIntel {
 
     @Override
     public SectorEntityToken getEntity() {
-        return cryosleeper;
+        return hypershunt;
     }
 
     @Override

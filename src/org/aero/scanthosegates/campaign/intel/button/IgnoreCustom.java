@@ -1,17 +1,15 @@
-package scanthosegates.campaign.intel.button;
+package org.aero.scanthosegates.campaign.intel.button;
 
 import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import org.lwjgl.input.Keyboard;
-import scanthosegates.campaign.intel.CustomMessageIntel;
+import org.aero.scanthosegates.campaign.intel.CustomMessageIntel;
 
-public class ToggleCustom implements IntelButton {
+public class IgnoreCustom implements IntelButton {
 
-    private final boolean showOnMap;
     private final CustomMessageIntel intel;
 
-    public ToggleCustom(boolean showOnMap, CustomMessageIntel intel) {
-        this.showOnMap = showOnMap;
+    public IgnoreCustom(CustomMessageIntel intel) {
         this.intel = intel;
     }
 
@@ -20,25 +18,27 @@ public class ToggleCustom implements IntelButton {
 
     @Override
     public void buttonPressConfirmed(IntelUIAPI ui) {
-        intel.toggleShow();
+        intel.endImmediately();
         ui.recreateIntelUI();
     }
 
     @Override
-    public void createConfirmationPrompt(TooltipMakerAPI tooltip) {}
+    public void createConfirmationPrompt(TooltipMakerAPI tooltip) {
+        tooltip.addPara("Are you sure you want to delete this message?", 0);
+    }
 
     @Override
     public boolean doesButtonHaveConfirmDialog() {
-        return false;
+        return true;
     }
 
     @Override
     public String getName() {
-        return showOnMap ? "Hide On Map" : "Show On Map";
+        return "Delete this message";
     }
 
     @Override
     public int getShortcut() {
-        return Keyboard.KEY_M;
+        return Keyboard.KEY_D;
     }
 }

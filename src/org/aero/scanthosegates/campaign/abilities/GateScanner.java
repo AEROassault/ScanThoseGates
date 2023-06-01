@@ -1,4 +1,4 @@
-package scanthosegates.campaign.econ.abilities;
+package org.aero.scanthosegates.campaign.abilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
@@ -19,8 +19,8 @@ import org.apache.log4j.Logger;
 import java.util.HashSet;
 
 import static java.lang.Math.pow;
-import static scanthosegates.ScannerModPlugin.ActivateAllGates;
-import static scanthosegates.ScannerModPlugin.RevealAllGates;
+import static org.aero.scanthosegates.ModPlugin.ActivateAllGates;
+import static org.aero.scanthosegates.ModPlugin.RevealAllGates;
 
 public class GateScanner extends BaseDurationAbility {
     public static String UNSCANNED_GATES = "$UnscannedGatesFound";

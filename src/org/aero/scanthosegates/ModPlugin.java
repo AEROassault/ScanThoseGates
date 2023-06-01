@@ -1,4 +1,4 @@
-package scanthosegates;
+package org.aero.scanthosegates;
 
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
@@ -7,18 +7,18 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import lunalib.lunaSettings.LunaSettings;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import scanthosegates.campaign.econ.abilities.CryosleeperScanner;
-import scanthosegates.campaign.econ.abilities.GateScanner;
-import scanthosegates.campaign.econ.abilities.HypershuntScanner;
-import scanthosegates.campaign.listeners.RelocationListener;
-import scanthosegates.campaign.listeners.SalvagingListener;
+import org.aero.scanthosegates.campaign.abilities.CryosleeperScanner;
+import org.aero.scanthosegates.campaign.abilities.GateScanner;
+import org.aero.scanthosegates.campaign.abilities.HypershuntScanner;
+import org.aero.scanthosegates.campaign.listeners.RelocationListener;
+import org.aero.scanthosegates.campaign.listeners.SalvagingListener;
 
 import java.util.MissingResourceException;
 
-import static scanthosegates.LunaSettingsChangedListener.addToManagerIfNeeded;
+import static org.aero.scanthosegates.LunaSettingsChangedListener.addToManagerIfNeeded;
 
-public class ScannerModPlugin extends BaseModPlugin {
-    private static final Logger log = Global.getLogger(ScannerModPlugin.class);
+public class ModPlugin extends BaseModPlugin {
+    private static final Logger log = Global.getLogger(ModPlugin.class);
     static {log.setLevel(Level.ALL);}
     public static final String ID = "scan_those_gates";
     public static final String MOD_PREFIX = "stg_";
@@ -29,7 +29,7 @@ public class ScannerModPlugin extends BaseModPlugin {
 
     static <T> T get(String id, Class<T> type) throws Exception {
         if (lunaLibEnabled) {
-            if (type == Boolean.class) return type.cast(LunaSettings.getBoolean(ScannerModPlugin.ID, MOD_PREFIX + id));
+            if (type == Boolean.class) return type.cast(LunaSettings.getBoolean(ModPlugin.ID, MOD_PREFIX + id));
         } else {
             if (type == Boolean.class) return type.cast(Global.getSettings().getBoolean(id));
         }

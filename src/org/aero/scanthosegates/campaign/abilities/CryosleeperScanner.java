@@ -1,4 +1,4 @@
-package scanthosegates.campaign.econ.abilities;
+package org.aero.scanthosegates.campaign.abilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
@@ -11,7 +11,7 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import scanthosegates.campaign.intel.CryosleeperIntel;
+import org.aero.scanthosegates.campaign.intel.CryosleeperIntel;
 
 
 public class CryosleeperScanner extends BaseDurationAbility {
