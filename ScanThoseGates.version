@@ -10,4 +10,5 @@
 	},
 	"starsectorVersion":"0.96a-RC10",
 	"directDownloadURL":"https://github.com/AEROassault/ScanThoseGates/releases/latest/download/ScanThoseGates.zip",
+    "changelogURL":"https://raw.githubusercontent.com/AEROassault/ScanThoseGates/main/changelog.txt",
 }
