@@ -4,15 +4,15 @@ import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 
 public interface IntelButton {
-    public void buttonPressCancelled(IntelUIAPI ui);
+    void buttonPressCancelled(IntelUIAPI ui);
 
-    public void buttonPressConfirmed(IntelUIAPI ui);
+    void buttonPressConfirmed(IntelUIAPI ui);
 
-    public void createConfirmationPrompt(TooltipMakerAPI tooltip);
+    void createConfirmationPrompt(TooltipMakerAPI tooltip);
 
-    public boolean doesButtonHaveConfirmDialog();
+    boolean doesButtonHaveConfirmDialog();
 
-    public String getName();
+    String getName();
 
-    public int getShortcut();
+    int getShortcut();
 }
