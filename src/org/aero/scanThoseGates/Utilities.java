@@ -1,4 +1,4 @@
-package org.aero.scanthosegates;
+package org.aero.scanThoseGates;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorEntityToken;

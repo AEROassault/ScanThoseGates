@@ -1,9 +1,9 @@
-package org.aero.scanthosegates;
+package org.aero.scanThoseGates;
 
 import lunalib.lunaSettings.LunaSettings;
 import lunalib.lunaSettings.LunaSettingsListener;
 
-import static org.aero.scanthosegates.ModPlugin.lunaLibEnabled;
+import static org.aero.scanThoseGates.ModPlugin.lunaLibEnabled;
 
 public class LunaSettingsChangedListener implements LunaSettingsListener {
     @Override

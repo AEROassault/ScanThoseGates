@@ -1,12 +1,12 @@
-package org.aero.scanthosegates.campaign.listeners;
+package org.aero.scanThoseGates.campaign.listeners;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.listeners.DiscoverEntityListener;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.aero.scanthosegates.campaign.abilities.CryosleeperScanner;
-import org.aero.scanthosegates.campaign.abilities.HypershuntScanner;
+import org.aero.scanThoseGates.campaign.abilities.CryosleeperScanner;
+import org.aero.scanThoseGates.campaign.abilities.HypershuntScanner;
 
 public class SalvagingListener implements DiscoverEntityListener {
     private static final Logger log = Global.getLogger(SalvagingListener.class);

@@ -1,4 +1,4 @@
-package org.aero.scanthosegates.campaign.intel;
+package org.aero.scanThoseGates.campaign.intel;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignClockAPI;
@@ -7,10 +7,10 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import org.aero.scanthosegates.Utilities;
-import org.aero.scanthosegates.campaign.intel.button.IgnoreCustom;
-import org.aero.scanthosegates.campaign.intel.button.LayInCourse;
-import org.aero.scanthosegates.campaign.intel.button.ToggleCustom;
+import org.aero.scanThoseGates.Utilities;
+import org.aero.scanThoseGates.campaign.intel.button.IgnoreCustom;
+import org.aero.scanThoseGates.campaign.intel.button.LayInCourse;
+import org.aero.scanThoseGates.campaign.intel.button.ToggleCustom;
 
 import java.awt.*;
 import java.util.Set;

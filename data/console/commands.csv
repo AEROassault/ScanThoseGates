@@ -1,2 +1,2 @@
 command,class,tags,syntax,help,
-RemoveScanThoseGates,org.aero.scanthosegates.console.RemoveScanThoseGates,"campaign, org.aero.scanthosegates",RemoveScanThoseGates,"Removes all abilities and intel entries added by the Scan Those Gates mod. After running the command and saving your game, the mod can safely be removed.",
+RemoveScanThoseGates,org.aero.scanThoseGates.console.RemoveScanThoseGates,"campaign, org.aero.scanThoseGates",RemoveScanThoseGates,"Removes all abilities and intel entries added by the Scan Those Gates mod. After running the command and saving your game, the mod can safely be removed.",

@@ -1,4 +1,4 @@
-package org.aero.scanthosegates.campaign.intel;
+package org.aero.scanThoseGates.campaign.intel;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.FactionAPI;
@@ -7,8 +7,8 @@ import com.fs.starfarer.api.loading.Description;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import org.aero.scanthosegates.ModPlugin;
-import org.aero.scanthosegates.campaign.intel.button.LayInCourse;
+import org.aero.scanThoseGates.ModPlugin;
+import org.aero.scanThoseGates.campaign.intel.button.LayInCourse;
 
 import java.awt.*;
 import java.util.Set;

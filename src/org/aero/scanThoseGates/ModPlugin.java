@@ -1,4 +1,4 @@
-package org.aero.scanthosegates;
+package org.aero.scanThoseGates;
 
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
@@ -7,15 +7,15 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import lunalib.lunaSettings.LunaSettings;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.aero.scanthosegates.campaign.abilities.CryosleeperScanner;
-import org.aero.scanthosegates.campaign.abilities.GateScanner;
-import org.aero.scanthosegates.campaign.abilities.HypershuntScanner;
-import org.aero.scanthosegates.campaign.listeners.RelocationListener;
-import org.aero.scanthosegates.campaign.listeners.SalvagingListener;
+import org.aero.scanThoseGates.campaign.abilities.CryosleeperScanner;
+import org.aero.scanThoseGates.campaign.abilities.GateScanner;
+import org.aero.scanThoseGates.campaign.abilities.HypershuntScanner;
+import org.aero.scanThoseGates.campaign.listeners.RelocationListener;
+import org.aero.scanThoseGates.campaign.listeners.SalvagingListener;
 
 import java.util.MissingResourceException;
 
-import static org.aero.scanthosegates.LunaSettingsChangedListener.addToManagerIfNeeded;
+import static org.aero.scanThoseGates.LunaSettingsChangedListener.addToManagerIfNeeded;
 
 public class ModPlugin extends BaseModPlugin {
     private static final Logger log = Global.getLogger(ModPlugin.class);
