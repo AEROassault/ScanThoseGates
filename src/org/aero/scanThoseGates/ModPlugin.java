@@ -49,7 +49,7 @@ public class ModPlugin extends BaseModPlugin {
     public static boolean ActivateAllGates = false;
 
     @Override
-    public void onGameLoad(boolean newGame){
+    public void onGameLoad(boolean newGame) {
         MemoryAPI sectorMemory = Global.getSector().getMemoryWithoutUpdate();
         CharacterDataAPI characterData = Global.getSector().getCharacterData();
 
