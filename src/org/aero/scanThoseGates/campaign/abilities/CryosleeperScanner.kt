@@ -1,93 +1,70 @@
-package org.aero.scanThoseGates.campaign.abilities;
+package org.aero.scanThoseGates.campaign.abilities
 
-import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
-import com.fs.starfarer.api.campaign.comm.IntelManagerAPI;
-import com.fs.starfarer.api.impl.campaign.abilities.BaseDurationAbility;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import com.fs.starfarer.api.util.Misc;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.aero.scanThoseGates.campaign.intel.CryosleeperIntel;
+import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.campaign.SectorEntityToken
+import com.fs.starfarer.api.impl.campaign.abilities.BaseDurationAbility
+import com.fs.starfarer.api.impl.campaign.ids.Tags
+import com.fs.starfarer.api.ui.TooltipMakerAPI
+import com.fs.starfarer.api.util.Misc
+import org.aero.scanThoseGates.ModPlugin.Settings.CAN_SCAN_CRYOSLEEPERS
+import org.aero.scanThoseGates.campaign.intel.CryosleeperIntel
+import org.apache.log4j.Level
+import org.apache.log4j.Logger
 
+class CryosleeperScanner : BaseDurationAbility() {
 
-public class CryosleeperScanner extends BaseDurationAbility {
-    public static String CAN_SCAN_CRYOSLEEPERS = "$CryosleeperScannerAllowed";
-    private static final Logger log = Global.getLogger(CryosleeperScanner.class);
-    static {log.setLevel(Level.ALL);}
-
-    @Override
-    protected void activateImpl() {
-
-    }
-
-    @Override
-    protected void applyEffect(float amount, float level) {
-        if (Global.getSector().getMemoryWithoutUpdate().getBoolean(CAN_SCAN_CRYOSLEEPERS)){
-            for (SectorEntityToken cryosleeper : Global.getSector().getCustomEntitiesWithTag(Tags.CRYOSLEEPER)){
+    override fun applyEffect(amount: Float, level: Float) {
+        if (Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_CRYOSLEEPERS)) {
+            for (cryosleeper in Global.getSector().getCustomEntitiesWithTag(Tags.CRYOSLEEPER)) {
                 if (tryCreateCryosleeperReportCustom(cryosleeper, log, true, false)
-                        && Global.getSector().getMemoryWithoutUpdate().getBoolean(CAN_SCAN_CRYOSLEEPERS)){
-                    Global.getSector().getMemoryWithoutUpdate().set(CAN_SCAN_CRYOSLEEPERS, false);
+                    && Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_CRYOSLEEPERS)
+                ) {
+                    Global.getSector().memoryWithoutUpdate[CAN_SCAN_CRYOSLEEPERS] = false
                 }
             }
         }
     }
 
-    @Override
-    protected void deactivateImpl() {
+    override fun isUsable(): Boolean { return Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_CRYOSLEEPERS) }
+    override fun hasTooltip(): Boolean { return true }
 
-    }
-
-    @Override
-    protected void cleanupImpl() {
-
-    }
-
-    @Override
-    public boolean isUsable() {
-        return Global.getSector().getMemoryWithoutUpdate().getBoolean(CAN_SCAN_CRYOSLEEPERS);
-    }
-
-    @Override
-    public boolean hasTooltip(){return true;}
-
-    public void createTooltip(TooltipMakerAPI tooltip, boolean expanded) {
-        CampaignFleetAPI fleet = getFleet();
-        if (fleet == null) return;
-        tooltip.addTitle("Remote Cryosleeper Survey");
-        float pad = 10f;
-        tooltip.addPara("Remotely surveys all Cryosleepers in the sector and adds them to the intel screen.", pad);
-
-        if (Global.getSector().getMemoryWithoutUpdate().getBoolean(CAN_SCAN_CRYOSLEEPERS)){
-            tooltip.addPara("Cryosleeper survey is ready to activate.", Misc.getPositiveHighlightColor(), pad);
+    override fun createTooltip(tooltip: TooltipMakerAPI, expanded: Boolean) {
+        val fleet = fleet ?: return
+        tooltip.addTitle("Remote Cryosleeper Survey")
+        val pad = 10f
+        tooltip.addPara("Remotely surveys all Cryosleepers in the sector and adds them to the intel screen.", pad)
+        if (Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_CRYOSLEEPERS)) {
+            tooltip.addPara("Cryosleeper survey is ready to activate.", Misc.getPositiveHighlightColor(), pad)
+        } else {
+            tooltip.addPara("Cryosleeper survey has already been used.", Misc.getNegativeHighlightColor(), pad)
         }
-        else {
-            tooltip.addPara("Cryosleeper survey has already been used.", Misc.getNegativeHighlightColor(), pad);
-        }
-        addIncompatibleToTooltip(tooltip, expanded);
+        addIncompatibleToTooltip(tooltip, expanded)
     }
 
-    public static boolean tryCreateCryosleeperReportCustom(SectorEntityToken cryosleeper, Logger log, boolean showMessage, boolean listener) {
-        if ((!cryosleeper.hasTag(Tags.CRYOSLEEPER) || cryosleeper.hasSensorProfile() || cryosleeper.isDiscoverable()) && listener){
-            return false;
-        }
+    override fun activateImpl() {}
+    override fun deactivateImpl() {}
+    override fun cleanupImpl() {}
 
-        IntelManagerAPI intelManager = Global.getSector().getIntelManager();
-        for (IntelInfoPlugin intel : intelManager.getIntel(CryosleeperIntel.class)) {
-            CryosleeperIntel cs = (CryosleeperIntel) intel;
-            if (cs.getEntity() == cryosleeper) {
-                return false; // report exists
+    companion object {
+        private val log = Global.getLogger(CryosleeperScanner::class.java)
+        init { log.level = Level.ALL }
+
+        fun tryCreateCryosleeperReportCustom(cryosleeper: SectorEntityToken, log: Logger, showMessage: Boolean, listener: Boolean): Boolean {
+            if ((!cryosleeper.hasTag(Tags.CRYOSLEEPER) || cryosleeper.hasSensorProfile() || cryosleeper.isDiscoverable) && listener) {
+                return false
             }
+            val intelManager = Global.getSector().intelManager
+            for (intel in intelManager.getIntel(CryosleeperIntel::class.java)) {
+                val cs = intel as CryosleeperIntel
+                if (cs.entity === cryosleeper) {
+                    return false // report exists
+                }
+            }
+            val report = CryosleeperIntel(cryosleeper)
+            report.isNew = showMessage
+            intelManager.addIntel(report, !showMessage)
+            log.info("Created intel report for cryosleeper in ${cryosleeper.starSystem}")
+            return true
         }
-
-        CryosleeperIntel report = new CryosleeperIntel(cryosleeper);
-        report.setNew(showMessage);
-        intelManager.addIntel(report, !showMessage);
-        log.info("Created intel report for cryosleeper in " + cryosleeper.getStarSystem());
-
-        return true;
     }
 }

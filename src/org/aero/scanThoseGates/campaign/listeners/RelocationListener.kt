@@ -1,26 +1,28 @@
-package org.aero.scanThoseGates.campaign.listeners;
+package org.aero.scanThoseGates.campaign.listeners
 
-import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.LocationAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.aero.scanThoseGates.campaign.abilities.CryosleeperScanner;
-import org.aero.scanThoseGates.campaign.abilities.HypershuntScanner;
+import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.campaign.LocationAPI
+import com.fs.starfarer.api.campaign.listeners.CurrentLocationChangedListener
+import com.fs.starfarer.api.impl.campaign.ids.Tags
+import org.aero.scanThoseGates.campaign.abilities.CryosleeperScanner.Companion.tryCreateCryosleeperReportCustom
+import org.aero.scanThoseGates.campaign.abilities.HypershuntScanner.Companion.tryCreateHypershuntReport
+import org.apache.log4j.Level
 
-public class RelocationListener implements CurrentLocationChangedListener {
-
-    private static final Logger log = Global.getLogger(RelocationListener.class);
-    static {log.setLevel(Level.ALL);}
-
-    public void reportCurrentLocationChanged(LocationAPI previous, LocationAPI current) {
-        for (SectorEntityToken cryo : current.getEntitiesWithTag(Tags.CRYOSLEEPER)) {
-            CryosleeperScanner.tryCreateCryosleeperReportCustom(cryo, log, true, true);
+class RelocationListener : CurrentLocationChangedListener {
+    override fun reportCurrentLocationChanged(previous: LocationAPI, current: LocationAPI) {
+        for (cryo in current.getEntitiesWithTag(Tags.CRYOSLEEPER)) {
+            tryCreateCryosleeperReportCustom(cryo!!, log, true, true)
         }
-        for (SectorEntityToken shunt : current.getEntitiesWithTag(Tags.CORONAL_TAP)) {
-            HypershuntScanner.tryCreateHypershuntReport(shunt, log, true, true);
+        for (shunt in current.getEntitiesWithTag(Tags.CORONAL_TAP)) {
+            tryCreateHypershuntReport(shunt!!, log, true, true)
+        }
+    }
+
+    companion object {
+        private val log = Global.getLogger(RelocationListener::class.java)
+
+        init {
+            log.level = Level.ALL
         }
     }
 }

@@ -1,95 +1,78 @@
-package org.aero.scanThoseGates.campaign.abilities;
+package org.aero.scanThoseGates.campaign.abilities
 
-import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
-import com.fs.starfarer.api.campaign.comm.IntelManagerAPI;
-import com.fs.starfarer.api.impl.campaign.abilities.BaseDurationAbility;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import com.fs.starfarer.api.util.Misc;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.aero.scanThoseGates.campaign.intel.CoronalHypershuntIntel;
+import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.campaign.SectorEntityToken
+import com.fs.starfarer.api.impl.campaign.abilities.BaseDurationAbility
+import com.fs.starfarer.api.impl.campaign.ids.Tags
+import com.fs.starfarer.api.ui.TooltipMakerAPI
+import com.fs.starfarer.api.util.Misc
+import org.aero.scanThoseGates.ModPlugin.Settings.CAN_SCAN_HYPERSHUNTS
+import org.aero.scanThoseGates.campaign.intel.CoronalHypershuntIntel
+import org.apache.log4j.Level
+import org.apache.log4j.Logger
 
+class HypershuntScanner : BaseDurationAbility() {
 
-public class HypershuntScanner extends BaseDurationAbility {
-    public static String CAN_SCAN_HYPERSHUNTS = "$HypershuntScannerAllowed";
-
-    private static final Logger log = Global.getLogger(HypershuntScanner.class);
-    static {log.setLevel(Level.ALL);}
-
-    @Override
-    protected void activateImpl() {
-
-    }
-
-    @Override
-    protected void applyEffect(float amount, float level) {
-        if (Global.getSector().getMemoryWithoutUpdate().getBoolean(CAN_SCAN_HYPERSHUNTS)){
-            for (SectorEntityToken hypershunt : Global.getSector().getCustomEntitiesWithTag(Tags.CORONAL_TAP)){
+    override fun applyEffect(amount: Float, level: Float) {
+        if (Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_HYPERSHUNTS)) {
+            for (hypershunt in Global.getSector().getCustomEntitiesWithTag(Tags.CORONAL_TAP)) {
                 if (tryCreateHypershuntReport(hypershunt, log, true, false)
-                        && Global.getSector().getMemoryWithoutUpdate().getBoolean(CAN_SCAN_HYPERSHUNTS)){
-                    Global.getSector().getMemoryWithoutUpdate().set(CAN_SCAN_HYPERSHUNTS, false);
+                    && Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_HYPERSHUNTS)
+                ) {
+                    Global.getSector().memoryWithoutUpdate[CAN_SCAN_HYPERSHUNTS] = false
                 }
             }
         }
     }
 
-    @Override
-    protected void deactivateImpl() {
+    override fun isUsable(): Boolean { return Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_HYPERSHUNTS) }
+    override fun hasTooltip(): Boolean { return true }
 
-    }
-
-    @Override
-    protected void cleanupImpl() {
-
-    }
-
-    @Override
-    public boolean isUsable() {
-        return Global.getSector().getMemoryWithoutUpdate().getBoolean(CAN_SCAN_HYPERSHUNTS);
-    }
-
-    @Override
-    public boolean hasTooltip(){return true;}
-
-    public void createTooltip(TooltipMakerAPI tooltip, boolean expanded) {
-        CampaignFleetAPI fleet = getFleet();
-        if (fleet == null) return;
-        tooltip.addTitle("Remote Hypershunt Survey");
-        float pad = 10f;
-        tooltip.addPara("Remotely surveys all Coronal Hypershunts in the sector and adds them to the intel screen.", pad);
-
-        if (Global.getSector().getMemoryWithoutUpdate().getBoolean(CAN_SCAN_HYPERSHUNTS)) {
-            tooltip.addPara("Hypershunt survey is ready to activate.", Misc.getPositiveHighlightColor(), pad);
-            tooltip.addPara("WARNING. Using this ability will reveal the basic layout of systems containing a hypershunt.", Misc.getHighlightColor(), pad);
+    override fun createTooltip(tooltip: TooltipMakerAPI, expanded: Boolean) {
+        val fleet = fleet ?: return
+        tooltip.addTitle("Remote Hypershunt Survey")
+        val pad = 10f
+        tooltip.addPara(
+            "Remotely surveys all Coronal Hypershunts in the sector and adds them to the intel screen.",
+            pad
+        )
+        if (Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_HYPERSHUNTS)) {
+            tooltip.addPara("Hypershunt survey is ready to activate.", Misc.getPositiveHighlightColor(), pad)
+            tooltip.addPara(
+                "WARNING. Using this ability will reveal the basic layout of systems containing a hypershunt.",
+                Misc.getHighlightColor(),
+                pad
+            )
+        } else {
+            tooltip.addPara("Hypershunt survey has already been used.", Misc.getNegativeHighlightColor(), pad)
         }
-        else {
-            tooltip.addPara("Hypershunt survey has already been used.", Misc.getNegativeHighlightColor(), pad);
-        }
-        addIncompatibleToTooltip(tooltip, expanded);
+        addIncompatibleToTooltip(tooltip, expanded)
     }
 
-    public static boolean tryCreateHypershuntReport(SectorEntityToken hypershunt, Logger log, boolean showMessage, boolean listener) {
-        if ((!hypershunt.hasTag(Tags.CORONAL_TAP) || hypershunt.hasSensorProfile() || hypershunt.isDiscoverable()) && listener){
-            return false;
-        }
+    override fun activateImpl() {}
+    override fun deactivateImpl() {}
+    override fun cleanupImpl() {}
 
-        IntelManagerAPI intelManager = Global.getSector().getIntelManager();
-        for (IntelInfoPlugin intel : intelManager.getIntel(CoronalHypershuntIntel.class)) {
-            CoronalHypershuntIntel hs = (CoronalHypershuntIntel) intel;
-            if (hs.getEntity() == hypershunt) {
-                return false; // report exists
+    companion object {
+        private val log = Global.getLogger(HypershuntScanner::class.java)
+        init { log.level = Level.ALL }
+
+        fun tryCreateHypershuntReport(hypershunt: SectorEntityToken, log: Logger, showMessage: Boolean, listener: Boolean): Boolean {
+            if ((!hypershunt.hasTag(Tags.CORONAL_TAP) || hypershunt.hasSensorProfile() || hypershunt.isDiscoverable) && listener) {
+                return false
             }
+            val intelManager = Global.getSector().intelManager
+            for (intel in intelManager.getIntel(CoronalHypershuntIntel::class.java)) {
+                val hs = intel as CoronalHypershuntIntel
+                if (hs.entity === hypershunt) {
+                    return false // report exists
+                }
+            }
+            val report = CoronalHypershuntIntel(hypershunt)
+            report.isNew = showMessage
+            intelManager.addIntel(report, !showMessage)
+            log.info("Created intel report for hypershunt in ${hypershunt.starSystem}")
+            return true
         }
-
-        CoronalHypershuntIntel report = new CoronalHypershuntIntel(hypershunt);
-        report.setNew(showMessage);
-        intelManager.addIntel(report, !showMessage);
-        log.info("Created intel report for hypershunt in " + hypershunt.getStarSystem());
-
-        return true;
     }
 }

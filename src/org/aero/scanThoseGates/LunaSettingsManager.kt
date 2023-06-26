@@ -1,21 +1,20 @@
-package org.aero.scanThoseGates;
+package org.aero.scanThoseGates
 
-import lunalib.lunaSettings.LunaSettings;
-import lunalib.lunaSettings.LunaSettingsListener;
+import lunalib.lunaSettings.LunaSettings.addSettingsListener
+import lunalib.lunaSettings.LunaSettings.hasSettingsListenerOfClass
+import lunalib.lunaSettings.LunaSettingsListener
+import org.aero.scanThoseGates.ModPlugin.Settings
 
-import static org.aero.scanThoseGates.ModPlugin.lunaLibEnabled;
-
-public class LunaSettingsManager implements LunaSettingsListener {
-    @Override
-    public void settingsChanged(String idOfModWithChangedSettings) {
-        if (idOfModWithChangedSettings.equals(ModPlugin.ID)) {
-            ModPlugin.readSettings();
+object LunaSettingsManager : LunaSettingsListener {
+    override fun settingsChanged(modID: String) {
+        if (modID == ModPlugin.ID) {
+            ModPlugin.readSettings()
         }
     }
 
-    public static void addToManagerIfNeeded() {
-        if(lunaLibEnabled && !LunaSettings.hasSettingsListenerOfClass(LunaSettingsManager.class)) {
-            LunaSettings.addSettingsListener(new LunaSettingsManager());
+    fun addToManagerIfNeeded() {
+        if (Settings.lunaLibEnabled && !hasSettingsListenerOfClass(LunaSettingsManager::class.java)) {
+            addSettingsListener(LunaSettingsManager)
         }
     }
 }

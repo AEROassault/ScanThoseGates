@@ -1,20 +1,23 @@
-package org.aero.scanThoseGates.campaign.listeners;
+package org.aero.scanThoseGates.campaign.listeners
 
-import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.listeners.DiscoverEntityListener;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.aero.scanThoseGates.campaign.abilities.CryosleeperScanner;
-import org.aero.scanThoseGates.campaign.abilities.HypershuntScanner;
+import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.campaign.SectorEntityToken
+import com.fs.starfarer.api.campaign.listeners.DiscoverEntityListener
+import org.aero.scanThoseGates.campaign.abilities.CryosleeperScanner.Companion.tryCreateCryosleeperReportCustom
+import org.aero.scanThoseGates.campaign.abilities.HypershuntScanner.Companion.tryCreateHypershuntReport
+import org.apache.log4j.Level
 
-public class SalvagingListener implements DiscoverEntityListener {
-    private static final Logger log = Global.getLogger(SalvagingListener.class);
-    static {log.setLevel(Level.ALL);}
+class SalvagingListener : DiscoverEntityListener {
+    override fun reportEntityDiscovered(entity: SectorEntityToken) {
+        tryCreateCryosleeperReportCustom(entity, log, true, true)
+        tryCreateHypershuntReport(entity, log, true, true)
+    }
 
-    @Override
-    public void reportEntityDiscovered(SectorEntityToken entity){
-        CryosleeperScanner.tryCreateCryosleeperReportCustom(entity, log, true, true);
-        HypershuntScanner.tryCreateHypershuntReport(entity, log, true, true);
+    companion object {
+        private val log = Global.getLogger(SalvagingListener::class.java)
+
+        init {
+            log.level = Level.ALL
+        }
     }
 }

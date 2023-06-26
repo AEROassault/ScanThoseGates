@@ -1,111 +1,90 @@
-package org.aero.scanThoseGates.campaign.intel;
+package org.aero.scanThoseGates.campaign.intel
 
-import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.loading.Description;
-import com.fs.starfarer.api.ui.SectorMapAPI;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import com.fs.starfarer.api.util.Misc;
-import org.aero.scanThoseGates.ModPlugin;
-import org.aero.scanThoseGates.campaign.intel.button.LayInCourse;
+import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.campaign.FactionAPI
+import com.fs.starfarer.api.campaign.SectorEntityToken
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin.IntelSortTier
+import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin.ListInfoMode
+import com.fs.starfarer.api.loading.Description
+import com.fs.starfarer.api.ui.SectorMapAPI
+import com.fs.starfarer.api.ui.TooltipMakerAPI
+import com.fs.starfarer.api.util.Misc
+import org.aero.scanThoseGates.ModPlugin
+import org.aero.scanThoseGates.campaign.intel.button.LayInCourse
 
-import java.awt.*;
-import java.util.Set;
-
-public class CryosleeperIntel extends BaseIntel {
-    public static final String INTEL_CRYOSLEEPER = ModPlugin.INTEL_MEGASTRUCTURES;
-    private final SectorEntityToken cryosleeper;
-
-    public CryosleeperIntel(SectorEntityToken cryosleeper) {
-        this.cryosleeper = cryosleeper;
-    }
-
-    public void createIntelInfo(TooltipMakerAPI info, ListInfoMode mode) {
-        Color c = getTitleColor(mode);
-        info.addPara(getName(), c, 0f);
-
-        float initPad;
-        if (mode == ListInfoMode.IN_DESC) {
-            initPad = 10f;
+class CryosleeperIntel(private val cryosleeper: SectorEntityToken) : BaseIntel() {
+    override fun createIntelInfo(info: TooltipMakerAPI, mode: ListInfoMode) {
+        val c = getTitleColor(mode)
+        info.addPara(name, c, 0f)
+        val initPad: Float
+        initPad = if (mode == ListInfoMode.IN_DESC) {
+            10f
         } else {
-            initPad = 3f;
+            3f
         }
-
-        bullet(info);
-        info.addPara(cryosleeper.getStarSystem().getName(), initPad, getBulletColorForMode(mode));
-        unindent(info);
+        bullet(info)
+        info.addPara(cryosleeper.starSystem.name, initPad, getBulletColorForMode(mode))
+        unindent(info)
     }
 
-    public String getSmallDescriptionTitle() {
-        return "Cryosleeper";
+    override fun getSmallDescriptionTitle(): String {
+        return "Cryosleeper"
     }
 
-    @Override
-    public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
-        float opad = 10f;
-
-        Description desc = Global.getSettings().getDescription("derelict_cryosleeper", Description.Type.CUSTOM);
-
-        TooltipMakerAPI text = info.beginImageWithText(cryosleeper.getCustomEntitySpec().getSpriteName(), 64);
-        text.addPara(desc.getText1FirstPara(), Misc.getGrayColor(), opad);
-        info.addImageWithText(opad);
-
+    override fun createSmallDescription(info: TooltipMakerAPI, width: Float, height: Float) {
+        val opad = 10f
+        val desc = Global.getSettings().getDescription("derelict_cryosleeper", Description.Type.CUSTOM)
+        val text = info.beginImageWithText(cryosleeper.customEntitySpec.spriteName, 64f)
+        text.addPara(desc.text1FirstPara, Misc.getGrayColor(), opad)
+        info.addImageWithText(opad)
         info.addPara(
-                "Located in the " + cryosleeper.getStarSystem().getNameWithLowercaseType() + ".",
-                opad,
-                Misc.getPositiveHighlightColor(),
-                cryosleeper.getStarSystem().getBaseName()
-        );
-
-        addGenericButton(info, width, new LayInCourse(cryosleeper));
+            "Located in the " + cryosleeper.starSystem.nameWithLowercaseType + ".",
+            opad,
+            Misc.getPositiveHighlightColor(),
+            cryosleeper.starSystem.baseName
+        )
+        addGenericButton(info, width, LayInCourse(cryosleeper))
     }
 
-    @Override
-    public String getIcon() {
-        return cryosleeper.getCustomEntitySpec().getIconName();
+    override fun getIcon(): String {
+        return cryosleeper.customEntitySpec.iconName
     }
 
-    @Override
-    public Set<String> getIntelTags(SectorMapAPI map) {
-        Set<String> tags = super.getIntelTags(map);
-        tags.add(INTEL_CRYOSLEEPER);
-
-        return tags;
+    override fun getIntelTags(map: SectorMapAPI): Set<String> {
+        val tags = super.getIntelTags(map)
+        tags.add(INTEL_CRYOSLEEPER)
+        return tags
     }
 
-    @Override
-    public FactionAPI getFactionForUIColors() {
-        return super.getFactionForUIColors();
+    override fun getFactionForUIColors(): FactionAPI {
+        return super.getFactionForUIColors()
     }
 
-    @Override
-    protected String getName() {
-        return "Cryosleeper Location";
+    override fun getName(): String {
+        return "Cryosleeper Location"
     }
 
-    @Override
-    public SectorEntityToken getMapLocation(SectorMapAPI map) {
-        return getEntity();
+    override fun getMapLocation(map: SectorMapAPI): SectorEntityToken {
+        return entity
     }
 
-    @Override
-    public boolean shouldRemoveIntel() {
-        return cryosleeper == null || !cryosleeper.isAlive();
+    override fun shouldRemoveIntel(): Boolean {
+        return !cryosleeper.isAlive
     }
 
-    @Override
-    public String getCommMessageSound() {
-        return "ui_discovered_entity";
+    override fun getCommMessageSound(): String {
+        return "ui_discovered_entity"
     }
 
-    @Override
-    public SectorEntityToken getEntity() {
-        return cryosleeper;
+    override fun getEntity(): SectorEntityToken {
+        return cryosleeper
     }
 
-    @Override
-    public IntelSortTier getSortTier() {
-        return IntelSortTier.TIER_6;
+    override fun getSortTier(): IntelSortTier {
+        return IntelSortTier.TIER_6
+    }
+
+    companion object {
+        const val INTEL_CRYOSLEEPER = ModPlugin.INTEL_MEGASTRUCTURES
     }
 }

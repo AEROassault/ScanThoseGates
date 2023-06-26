@@ -1,197 +1,198 @@
-package org.aero.scanThoseGates.campaign.abilities;
+package org.aero.scanThoseGates.campaign.abilities
 
-import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.LocationAPI;
-import com.fs.starfarer.api.campaign.SectorEntityToken;
-import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
-import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.GateEntityPlugin;
-import com.fs.starfarer.api.impl.campaign.abilities.BaseDurationAbility;
-import com.fs.starfarer.api.impl.campaign.ids.Tags;
-import com.fs.starfarer.api.impl.campaign.intel.misc.GateIntel;
-import com.fs.starfarer.api.impl.campaign.rulecmd.missions.GateCMD;
-import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import com.fs.starfarer.api.util.Misc;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.campaign.LocationAPI
+import com.fs.starfarer.api.campaign.SectorEntityToken
+import com.fs.starfarer.api.impl.campaign.GateEntityPlugin
+import com.fs.starfarer.api.impl.campaign.abilities.BaseDurationAbility
+import com.fs.starfarer.api.impl.campaign.ids.Tags
+import com.fs.starfarer.api.impl.campaign.intel.misc.GateIntel
+import com.fs.starfarer.api.impl.campaign.rulecmd.missions.GateCMD
+import com.fs.starfarer.api.ui.TooltipMakerAPI
+import com.fs.starfarer.api.util.Misc
+import org.aero.scanThoseGates.ModPlugin
+import org.aero.scanThoseGates.ModPlugin.Settings.ActivateAllGates
+import org.aero.scanThoseGates.ModPlugin.Settings.RevealAllGates
+import org.aero.scanThoseGates.ModPlugin.Settings.UNSCANNED_GATES
+import org.apache.log4j.Level
+import kotlin.math.pow
 
-import java.util.HashSet;
+class GateScanner : BaseDurationAbility() {
+    companion object {
+        private val log = Global.getLogger(GateScanner::class.java)
+        init { log.level = Level.ALL }
 
-import static java.lang.Math.pow;
-import static org.aero.scanThoseGates.ModPlugin.ActivateAllGates;
-import static org.aero.scanThoseGates.ModPlugin.RevealAllGates;
+        var systemsWithMarkets = HashSet<LocationAPI>()
+        var gateScanPrimed = false
 
-public class GateScanner extends BaseDurationAbility {
-    public static String UNSCANNED_GATES = "$UnscannedGatesFound";
-    HashSet<LocationAPI> systemsWithMarkets = new HashSet<>();
-    private static final Logger log = Global.getLogger(GateScanner.class);
-    static {log.setLevel(Level.ALL);}
-    boolean gateScanPrimed;
-    final float checksReportInterval = 60;
-    float secondsSinceLastReport = 0;
-    final float secondsBetweenChecks = 1;
-    float secondsSinceLastCheck = 0;
+        const val checksReportInterval = 60f
+        var secondsSinceLastReport = 0f
 
-    @Override
-    protected void activateImpl() {}
-
-    @Override
-    protected void applyEffect(float amount, float level) {
-        if (Global.getSector().getMemoryWithoutUpdate().getBoolean(UNSCANNED_GATES)) {
-            long startTime = System.nanoTime();
-            systemsWithMarkets = generateMarketSystemsHashset();
-            String gateStatusString = "null";
-            for (SectorEntityToken gate : Global.getSector().getCustomEntitiesWithTag(Tags.GATE)) {
-                boolean gateScanStatus = gate.getMemoryWithoutUpdate().getBoolean(GateEntityPlugin.GATE_SCANNED);
-                boolean revealThatGate = false;
+        const val secondsBetweenChecks = 1f
+        var secondsSinceLastCheck = 0f
+    }
+    override fun applyEffect(amount: Float, level: Float) {
+        log.info("Settings variable logging: RevealAllGates = $RevealAllGates, ActivateAllGates = $ActivateAllGates")
+        if (Global.getSector().memoryWithoutUpdate.getBoolean(UNSCANNED_GATES)) {
+            val startTime = System.nanoTime()
+            generateMarketSystemsHashset()
+            var gateStatusString = "null"
+            var gateIntelString = "null"
+            for (gate in Global.getSector().getCustomEntitiesWithTag(Tags.GATE)) {
+                val gateScanStatus = gate.memoryWithoutUpdate.getBoolean(GateEntityPlugin.GATE_SCANNED)
+                var revealThatGate = false
                 try {
-                    if ((systemsWithMarkets.contains(gate.getContainingLocation()) && !gateScanStatus)
-                            || (ActivateAllGates && !gateScanStatus)) {
-                        gate.getMemory().set(GateEntityPlugin.GATE_SCANNED, true);
-                        GateCMD.notifyScanned(gate);
-                        gateStatusString = " is activated.";
-                        revealThatGate = true;
+                    if (systemsWithMarkets.contains(gate.containingLocation) && !gateScanStatus || ActivateAllGates && !gateScanStatus) {
+                        gate.memory[GateEntityPlugin.GATE_SCANNED] = true
+                        GateCMD.notifyScanned(gate)
+                        gateStatusString = "has been activated"
+                        revealThatGate = true
                     } else if (gateScanStatus) {
-                        gateStatusString = " is already scanned, ignoring.";
+                        gateStatusString = "has already scanned"
                     } else {
-                        gateStatusString = " is in a marketless system, ignoring.";
+                        gateStatusString = "is in a marketless system"
                     }
-                } catch (Exception CannotScanGate) {
-                    gateStatusString = " IS BROKEN. Exception: " + CannotScanGate;
-                    revealThatGate = true;
+                } catch (cannotScanGate: Exception) {
+                    gateStatusString = " is broken. Exception: $cannotScanGate."
+                    revealThatGate = true
                 } finally {
                     try {
                         if (gateIntelDoesNotExist(gate)) {
-                            if (RevealAllGates) {
-                                Global.getSector().getIntelManager().addIntel(new GateIntel(gate));
-                            } else if (revealThatGate) {
-                                Global.getSector().getIntelManager().addIntel(new GateIntel(gate));
+                            if (revealThatGate || RevealAllGates) {
+                                Global.getSector().intelManager.addIntel(GateIntel(gate))
+                                gateIntelString = "has been added to the intel screen"
+                            } else {
+                                gateIntelString = "has not been added to the intel screen"
                             }
+                        } else {
+                            gateIntelString = "has already been added to the intel screen"
                         }
-                    } catch (Exception CannotAddGateIntel) {
-                        log.debug(gate.getName() + " in " + gate.getContainingLocation().getName() + " somehow broke the intel system. Exception: " + CannotAddGateIntel);
+                    } catch (cannotAddGateIntel: Exception) {
+                        log.debug("${gate.name} in ${gate.containingLocation.name} somehow broke the intel system. Exception: $cannotAddGateIntel")
                     }
-                    log.info(gate.getName() + " in " + gate.getContainingLocation().getName() + gateStatusString);
+                    log.info("${gate.name} in ${gate.containingLocation.name} $gateStatusString and $gateIntelString.")
                 }
             }
-            Global.getSector().getMemoryWithoutUpdate().set(UNSCANNED_GATES, false);
-            systemsWithMarkets.clear();
-            long elapsedTime = System.nanoTime() - startTime;
-            log.info("It took " + elapsedTime / pow(10, 9) + " seconds (" + elapsedTime / pow(10, 6) + " milliseconds or "
-                    + elapsedTime + " nanoseconds) to execute the gate scan.");
+            Global.getSector().memoryWithoutUpdate[UNSCANNED_GATES] = false
 
+            val elapsedTime = System.nanoTime() - startTime
+
+            log.info("It took ${elapsedTime / 10.0.pow(9.0)} seconds " +
+                        "(${elapsedTime / 10.0.pow(6.0)} milliseconds or " +
+                        "$elapsedTime nanoseconds) to execute the gate scan.")
         }
     }
 
-    @Override
-    protected void deactivateImpl() {}
-
-    @Override
-    protected void cleanupImpl() {}
-
-    @Override
-    public void advance(float amount) {
-        super.advance(amount);
-        secondsSinceLastCheck += amount;
-        secondsSinceLastReport += amount;
+    override fun advance(amount: Float) {
+        super.advance(amount)
+        secondsSinceLastCheck += amount
+        secondsSinceLastReport += amount
         if (secondsSinceLastCheck > secondsBetweenChecks) {
-            long startUsableCheck = System.nanoTime();
-            checkForGates();
-            secondsSinceLastCheck = 0;
-            systemsWithMarkets.clear();
-            long endUsableCheck = System.nanoTime() - startUsableCheck;
+            val startUsableCheck = System.nanoTime()
+            checkForGates()
+            secondsSinceLastCheck = 0f
+            val endUsableCheck = System.nanoTime() - startUsableCheck
             if (secondsSinceLastReport > checksReportInterval) {
-                log.info("CheckForGates() took " + endUsableCheck / pow(10, 9) + " seconds (" + endUsableCheck/pow(10, 6)
-                        + " milliseconds or " + endUsableCheck + " nanoseconds) to complete.");
-                secondsSinceLastReport = 0;
+                log.info("CheckForGates() took ${endUsableCheck / 10.0.pow(9.0)} seconds " +
+                        "(${endUsableCheck / 10.0.pow(6.0)} milliseconds or " +
+                        "$endUsableCheck nanoseconds) to execute the gate scan.")
+                secondsSinceLastReport = 0f
             }
         }
     }
 
-    @Override
-    public boolean isUsable() {
-        return Global.getSector().getMemoryWithoutUpdate().getBoolean(GateEntityPlugin.CAN_SCAN_GATES)
-                && Global.getSector().getMemoryWithoutUpdate().getBoolean(GateEntityPlugin.GATES_ACTIVE)
-                && Global.getSector().getMemoryWithoutUpdate().getBoolean(UNSCANNED_GATES);
+    override fun isUsable(): Boolean {
+        return (Global.getSector().memoryWithoutUpdate.getBoolean(GateEntityPlugin.CAN_SCAN_GATES)
+                && Global.getSector().memoryWithoutUpdate.getBoolean(GateEntityPlugin.GATES_ACTIVE)
+                && Global.getSector().memoryWithoutUpdate.getBoolean(UNSCANNED_GATES))
     }
 
-    @Override
-    public boolean hasTooltip() {return true;}
+    override fun hasTooltip(): Boolean {
+        return true
+    }
 
-    public void createTooltip(TooltipMakerAPI tooltip, boolean expanded) {
-        gateScanPrimed = Global.getSector().getMemoryWithoutUpdate().getBoolean(GateEntityPlugin.CAN_SCAN_GATES)
-                && Global.getSector().getMemoryWithoutUpdate().getBoolean(GateEntityPlugin.GATES_ACTIVE);
-        CampaignFleetAPI fleet = getFleet();
-        if (fleet == null) return;
-        tooltip.addTitle("Remote Gate Scan");
-        float pad = 10f;
-
-        if (RevealAllGates && !ActivateAllGates) {
-            tooltip.addPara("Scans all gates located in systems with at least one non-hidden market " +
-                    "and adds all gates to the intel screen, regardless of market presence in the gate's system.", pad);
-        }
-        else if (ActivateAllGates) {
-            tooltip.addPara("Scans all gates regardless of market presence in the gate's system.", pad);
-        }
-        else {
-            tooltip.addPara("Scans all gates located in systems with at least one non-hidden market " +
-                    "and adds them to the intel screen.", 10f);
+    override fun createTooltip(tooltip: TooltipMakerAPI, expanded: Boolean) {
+        gateScanPrimed = (Global.getSector().memoryWithoutUpdate.getBoolean(GateEntityPlugin.CAN_SCAN_GATES)
+                && Global.getSector().memoryWithoutUpdate.getBoolean(GateEntityPlugin.GATES_ACTIVE))
+        val fleet = fleet ?: return
+        tooltip.addTitle("Remote Gate Scan")
+        val pad = 10f
+        if (ModPlugin.RevealAllGates && !ModPlugin.ActivateAllGates) {
+            tooltip.addPara(
+                "Scans all gates located in systems with at least one non-hidden market " +
+                        "and adds all gates to the intel screen, regardless of market presence in the gate's system.",
+                pad
+            )
+        } else if (ModPlugin.ActivateAllGates) {
+            tooltip.addPara("Scans all gates regardless of market presence in the gate's system.", pad)
+        } else {
+            tooltip.addPara(
+                "Scans all gates located in systems with at least one non-hidden market " +
+                        "and adds them to the intel screen.", 10f
+            )
         }
         if (!gateScanPrimed) {
-            tooltip.addPara("Cannot activate gates yet, the Janus Device has not been acquired.",
-                    Misc.getNegativeHighlightColor(), pad);
+            tooltip.addPara(
+                "Cannot activate gates yet, the Janus Device has not been acquired.",
+                Misc.getNegativeHighlightColor(), pad
+            )
+        } else if (!Global.getSector().memoryWithoutUpdate.getBoolean(UNSCANNED_GATES)) {
+            tooltip.addPara(
+                "The Janus Device has been acquired, but there are no gates available to scan.",
+                Misc.getNegativeHighlightColor(), pad
+            )
+        } else {
+            tooltip.addPara(
+                "The Janus Device has been acquired and there are gates available to scan.",
+                Misc.getPositiveHighlightColor(), pad
+            )
         }
-        else if (!Global.getSector().getMemoryWithoutUpdate().getBoolean(UNSCANNED_GATES)) {
-            tooltip.addPara("The Janus Device has been acquired, but there are no gates available to scan.",
-                    Misc.getNegativeHighlightColor(), pad);
-        }
-        else {
-            tooltip.addPara("The Janus Device has been acquired and there are gates available to scan.",
-                    Misc.getPositiveHighlightColor(), pad);
-        }
-        addIncompatibleToTooltip(tooltip, expanded);
+        addIncompatibleToTooltip(tooltip, expanded)
     }
 
-    public boolean gateIntelDoesNotExist(SectorEntityToken gate) {
-        for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel(GateIntel.class)){
-            GateIntel gi = (GateIntel) intel;
-            if (gi.getGate() == gate) {
-                return false;
+    private fun gateIntelDoesNotExist(gate: SectorEntityToken): Boolean {
+        for (intel in Global.getSector().intelManager.getIntel(GateIntel::class.java)) {
+            val gi = intel as GateIntel
+            if (gi.gate === gate) {
+                return false
             }
         }
-        return true;
+        return true
     }
 
-    public HashSet<LocationAPI> generateMarketSystemsHashset() {
-        for (LocationAPI systemWithMarket : Global.getSector().getEconomy().getStarSystemsWithMarkets()) {
+    private fun generateMarketSystemsHashset() {
+        for (systemWithMarket in Global.getSector().economy.starSystemsWithMarkets) {
             if (!systemsWithMarkets.contains(systemWithMarket)) {
-                for (MarketAPI market : Global.getSector().getEconomy().getMarkets(systemWithMarket)) {
-                    if (!market.isHidden()) {
-                        systemsWithMarkets.add(systemWithMarket);
-                        break;
+                for (market in Global.getSector().economy.getMarkets(systemWithMarket)) {
+                    if (!market.isHidden) {
+                        systemsWithMarkets.add(systemWithMarket)
+                        break
                     }
                 }
             }
         }
-        return systemsWithMarkets;
     }
 
-    public void checkForGates() {
-        systemsWithMarkets = generateMarketSystemsHashset();
-        for (SectorEntityToken gate : Global.getSector().getCustomEntitiesWithTag(Tags.GATE)) {
-            if (!gate.getMemoryWithoutUpdate().getBoolean(GateEntityPlugin.GATE_SCANNED)) {
-                if (ActivateAllGates) {
-                    Global.getSector().getMemoryWithoutUpdate().set(UNSCANNED_GATES, true);
-                    return;
-                } else if (RevealAllGates && gateIntelDoesNotExist(gate)) {
-                    Global.getSector().getMemoryWithoutUpdate().set(UNSCANNED_GATES, true);
-                    return;
-                } else if (systemsWithMarkets.contains(gate.getContainingLocation())) {
-                    Global.getSector().getMemoryWithoutUpdate().set(UNSCANNED_GATES, true);
-                    return;
+    private fun checkForGates() {
+        generateMarketSystemsHashset()
+        for (gate in Global.getSector().getCustomEntitiesWithTag(Tags.GATE)) {
+            if (!gate.memoryWithoutUpdate.getBoolean(GateEntityPlugin.GATE_SCANNED)) {
+                if (ModPlugin.ActivateAllGates) {
+                    Global.getSector().memoryWithoutUpdate[UNSCANNED_GATES] = true
+                    return
+                } else if (ModPlugin.RevealAllGates && gateIntelDoesNotExist(gate)) {
+                    Global.getSector().memoryWithoutUpdate[UNSCANNED_GATES] = true
+                    return
+                } else if (systemsWithMarkets.contains(gate.containingLocation)) {
+                    Global.getSector().memoryWithoutUpdate[UNSCANNED_GATES] = true
+                    return
                 }
             }
         }
     }
+
+    override fun activateImpl() {}
+    override fun deactivateImpl() {}
+    override fun cleanupImpl() {}
+
 }

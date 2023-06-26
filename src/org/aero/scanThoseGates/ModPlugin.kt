@@ -1,103 +1,103 @@
-package org.aero.scanThoseGates;
+package org.aero.scanThoseGates
 
-import com.fs.starfarer.api.BaseModPlugin;
-import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CharacterDataAPI;
-import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import lunalib.lunaSettings.LunaSettings;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.aero.scanThoseGates.campaign.abilities.CryosleeperScanner;
-import org.aero.scanThoseGates.campaign.abilities.GateScanner;
-import org.aero.scanThoseGates.campaign.abilities.HypershuntScanner;
-import org.aero.scanThoseGates.campaign.listeners.RelocationListener;
-import org.aero.scanThoseGates.campaign.listeners.SalvagingListener;
+import com.fs.starfarer.api.BaseModPlugin
+import com.fs.starfarer.api.Global
+import lunalib.lunaSettings.LunaSettings
+import lunalib.lunaSettings.LunaSettings.getBoolean
+import org.aero.scanThoseGates.campaign.abilities.CryosleeperScanner
+import org.aero.scanThoseGates.campaign.abilities.GateScanner
+import org.aero.scanThoseGates.campaign.abilities.HypershuntScanner
+import org.aero.scanThoseGates.campaign.listeners.RelocationListener
+import org.aero.scanThoseGates.campaign.listeners.SalvagingListener
+import org.apache.log4j.Level
+import java.util.*
 
-import java.util.MissingResourceException;
+class ModPlugin : BaseModPlugin() {
 
-import static org.aero.scanThoseGates.LunaSettingsManager.addToManagerIfNeeded;
 
-public class ModPlugin extends BaseModPlugin {
-    private static final Logger log = Global.getLogger(ModPlugin.class);
-    static {log.setLevel(Level.ALL);}
-    public static final String ID = "scan_those_gates";
-    public static final String MOD_PREFIX = "stg_";
-    public static final String INTEL_MEGASTRUCTURES = "Megastructures";
-    public static final String LUNALIB_ID = "lunalib";
-    public static boolean lunaLibEnabled = Global.getSettings().getModManager().isModEnabled(LUNALIB_ID);
-    public static final int LUNA_MAJOR = 1, LUNA_MINOR = 7, LUNA_PATCH = 4;
+    companion object Settings {
+        private val log = Global.getLogger(ModPlugin::class.java)
+        init { log.level = Level.ALL }
 
-    static <T> T get(String id, Class<T> type) throws Exception {
+        const val ID = "scan_those_gates"
+        const val LUNALIB_ID = "lunalib"
+
+        var lunaLibEnabled = Global.getSettings().modManager.isModEnabled(LUNALIB_ID)
+
+        const val LUNA_MAJOR = 1
+        const val LUNA_MINOR = 7
+        const val LUNA_PATCH = 4
+
+        var RevealAllGates = false
+        var ActivateAllGates = false
+
+        const val gateAbilityString = "stg_GateScanner"
+        const val hypershuntAbilityString = "stg_HypershuntScanner"
+        const val cryosleeperAbilitystring = "stg_CryosleeperScanner"
+
+        const val INTEL_MEGASTRUCTURES = "Megastructures"
+        const val UNSCANNED_GATES = "\$UnscannedGatesFound"
+        const val CAN_SCAN_HYPERSHUNTS = "\$HypershuntScannerAllowed"
+        const val CAN_SCAN_CRYOSLEEPERS = "\$CryosleeperScannerAllowed"
+
+        private fun getBoolean(id: String): Boolean { return LunaSettings.getBoolean(ID, id) ?: Global.getSettings().getBoolean(id) }
+
+        fun readSettings() {
+            RevealAllGates = getBoolean("RevealInactiveGates")
+            ActivateAllGates = getBoolean("ActivateInactiveGates")
+        }
+
+    }
+    override fun onGameLoad(newGame: Boolean) {
+        val sectorMemory = Global.getSector().memoryWithoutUpdate
+        val characterData = Global.getSector().characterData
+        val playerAbilities = characterData.abilities + Global.getSector().playerPerson.stats.grantedAbilityIds
+
+        if (UNSCANNED_GATES !in sectorMemory) {
+            sectorMemory[UNSCANNED_GATES] = true
+        }
+        if (CAN_SCAN_HYPERSHUNTS !in sectorMemory) {
+            sectorMemory[CAN_SCAN_HYPERSHUNTS] = true
+        }
+        if (CAN_SCAN_CRYOSLEEPERS !in sectorMemory) {
+            sectorMemory[CAN_SCAN_CRYOSLEEPERS] = true
+        }
+
+        if (gateAbilityString !in playerAbilities) {
+            characterData.addAbility(gateAbilityString)
+        }
+        if (hypershuntAbilityString !in playerAbilities) {
+            characterData.addAbility(hypershuntAbilityString)
+        }
+        if (cryosleeperAbilitystring !in playerAbilities) {
+            characterData.addAbility(cryosleeperAbilitystring)
+        }
+
+        Global.getSector().listenerManager.addListener(RelocationListener(), true)
+        Global.getSector().listenerManager.addListener(SalvagingListener(), true)
+
+        readSettings()
+    }
+
+    override fun onApplicationLoad() {
         if (lunaLibEnabled) {
-            if (type == Boolean.class) return type.cast(LunaSettings.getBoolean(ModPlugin.ID, MOD_PREFIX + id));
-        } else {
-            if (type == Boolean.class) return type.cast(Global.getSettings().getBoolean(id));
-        }
-        throw new MissingResourceException("No setting found with id: " + id, type.getName(), id);
-    }
-    static boolean getBoolean(String id) throws Exception { return get(id, Boolean.class); }
-    static void readSettings() {
-        try {
-            RevealAllGates = getBoolean("RevealInactiveGates");
-            ActivateAllGates = getBoolean("ActivateInactiveGates");
-        } catch (Exception e) {
-            log.debug("Failed to read lunaSettings. Exception: " + e);
-        }
-    }
-
-    public static boolean RevealAllGates = false;
-    public static boolean ActivateAllGates = false;
-
-    @Override
-    public void onGameLoad(boolean newGame) {
-        MemoryAPI sectorMemory = Global.getSector().getMemoryWithoutUpdate();
-        CharacterDataAPI characterData = Global.getSector().getCharacterData();
-
-        if (!sectorMemory.contains(GateScanner.UNSCANNED_GATES)) {
-            sectorMemory.set(GateScanner.UNSCANNED_GATES, true);
-        }
-        if (!sectorMemory.contains(HypershuntScanner.CAN_SCAN_HYPERSHUNTS)) {
-            sectorMemory.set(HypershuntScanner.CAN_SCAN_HYPERSHUNTS, true);
-        }
-        if (!sectorMemory.contains(CryosleeperScanner.CAN_SCAN_CRYOSLEEPERS)) {
-            sectorMemory.set(CryosleeperScanner.CAN_SCAN_CRYOSLEEPERS, true);
-        }
-
-        if (!characterData.getAbilities().contains("stg_GateScanner")) {
-            characterData.addAbility("stg_GateScanner");
-        }
-        if (!characterData.getAbilities().contains("stg_HypershuntScanner")) {
-            characterData.addAbility("stg_HypershuntScanner");
-        }
-        if (!characterData.getAbilities().contains("stg_CryosleeperScanner")) {
-            characterData.addAbility("stg_CryosleeperScanner");
-        }
-
-        Global.getSector().getListenerManager().addListener(new RelocationListener(), true);
-        Global.getSector().getListenerManager().addListener(new SalvagingListener(), true);
-
-        readSettings();
-    }
-
-    @Override
-    public void onApplicationLoad() {
-        if (lunaLibEnabled){
             if (requiredLunaLibVersionPresent()) {
-                addToManagerIfNeeded();
+                LunaSettingsManager.addToManagerIfNeeded()
             } else {
-                throw new RuntimeException("Using LunaLib with this mod requires at least version "
-                        + LUNA_MAJOR + "." + LUNA_MINOR + "." + LUNA_PATCH + " of LunaLib. Update your LunaLib, or else...");
+                throw RuntimeException("Using LunaLib with this mod requires at least version " +
+                        "$LUNA_MAJOR.$LUNA_MINOR.$LUNA_PATCH of LunaLib. Update your LunaLib, or else..."
+                )
             }
         }
     }
 
-    public static boolean requiredLunaLibVersionPresent() {
-        String version = Global.getSettings().getModManager().getModSpec(LUNALIB_ID).getVersion();
-        log.info("LunaLib Version: " + version);
-        String[] temp = version.split("\\.");
-        if (Integer.parseInt(temp[0]) < LUNA_MAJOR) return false;
-        if (Integer.parseInt(temp[1]) < LUNA_MINOR) return false;
-        if (Integer.parseInt(temp[2]) < LUNA_PATCH) return false;
-        return true;
+    private fun requiredLunaLibVersionPresent(): Boolean {
+        val version = Global.getSettings().modManager.getModSpec(LUNALIB_ID).version
+        log.info("LunaLib Version: $version")
+        val temp = version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        if (temp[0].toInt() < LUNA_MAJOR) return false
+        if (temp[1].toInt() < LUNA_MINOR) return false
+        return temp[2].toInt() >= LUNA_PATCH
     }
+
 }
