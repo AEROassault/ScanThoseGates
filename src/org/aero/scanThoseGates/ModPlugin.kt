@@ -3,14 +3,9 @@ package org.aero.scanThoseGates
 import com.fs.starfarer.api.BaseModPlugin
 import com.fs.starfarer.api.Global
 import lunalib.lunaSettings.LunaSettings
-import lunalib.lunaSettings.LunaSettings.getBoolean
-import org.aero.scanThoseGates.campaign.abilities.CryosleeperScanner
-import org.aero.scanThoseGates.campaign.abilities.GateScanner
-import org.aero.scanThoseGates.campaign.abilities.HypershuntScanner
 import org.aero.scanThoseGates.campaign.listeners.RelocationListener
 import org.aero.scanThoseGates.campaign.listeners.SalvagingListener
 import org.apache.log4j.Level
-import java.util.*
 
 class ModPlugin : BaseModPlugin() {
 

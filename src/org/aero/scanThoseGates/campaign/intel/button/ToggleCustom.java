@@ -2,8 +2,8 @@ package org.aero.scanThoseGates.campaign.intel.button;
 
 import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import org.lwjgl.input.Keyboard;
 import org.aero.scanThoseGates.campaign.intel.CustomMessageIntel;
+import org.lwjgl.input.Keyboard;
 
 public class ToggleCustom implements IntelButton {
 
