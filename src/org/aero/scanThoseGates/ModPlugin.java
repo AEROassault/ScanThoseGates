@@ -15,7 +15,7 @@ import org.aero.scanThoseGates.campaign.listeners.SalvagingListener;
 
 import java.util.MissingResourceException;
 
-import static org.aero.scanThoseGates.LunaSettingsChangedListener.addToManagerIfNeeded;
+import static org.aero.scanThoseGates.LunaSettingsManager.addToManagerIfNeeded;
 
 public class ModPlugin extends BaseModPlugin {
     private static final Logger log = Global.getLogger(ModPlugin.class);

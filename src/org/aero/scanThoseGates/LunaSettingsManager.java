@@ -5,7 +5,7 @@ import lunalib.lunaSettings.LunaSettingsListener;
 
 import static org.aero.scanThoseGates.ModPlugin.lunaLibEnabled;
 
-public class LunaSettingsChangedListener implements LunaSettingsListener {
+public class LunaSettingsManager implements LunaSettingsListener {
     @Override
     public void settingsChanged(String idOfModWithChangedSettings) {
         if (idOfModWithChangedSettings.equals(ModPlugin.ID)) {
@@ -14,8 +14,8 @@ public class LunaSettingsChangedListener implements LunaSettingsListener {
     }
 
     public static void addToManagerIfNeeded() {
-        if(lunaLibEnabled && !LunaSettings.hasSettingsListenerOfClass(LunaSettingsChangedListener.class)) {
-            LunaSettings.addSettingsListener(new LunaSettingsChangedListener());
+        if(lunaLibEnabled && !LunaSettings.hasSettingsListenerOfClass(LunaSettingsManager.class)) {
+            LunaSettings.addSettingsListener(new LunaSettingsManager());
         }
     }
 }
