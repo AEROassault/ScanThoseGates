@@ -7,6 +7,7 @@
 
 # IntelliJ
 out/
+/.run/
 /*.iml
 
 # Cache file creation bug
