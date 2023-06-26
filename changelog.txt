@@ -1,3 +1,8 @@
+Version 1.5.6
+- Kotlin
+- Fix logging for Gate Scanner
+- Abilities should now be added if they aren't detected in the player's available abilities
+
 Version 1.5.5
 - Prevent users from using outdated version of LunaLib with mod
 - Fixed spelling error in variable naming
