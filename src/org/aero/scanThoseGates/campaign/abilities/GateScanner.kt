@@ -10,7 +10,6 @@ import com.fs.starfarer.api.impl.campaign.intel.misc.GateIntel
 import com.fs.starfarer.api.impl.campaign.rulecmd.missions.GateCMD
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.util.Misc
-import org.aero.scanThoseGates.ModPlugin
 import org.aero.scanThoseGates.ModPlugin.Settings.ActivateAllGates
 import org.aero.scanThoseGates.ModPlugin.Settings.RevealAllGates
 import org.aero.scanThoseGates.ModPlugin.Settings.UNSCANNED_GATES
@@ -117,13 +116,13 @@ class GateScanner : BaseDurationAbility() {
         val fleet = fleet ?: return
         tooltip.addTitle("Remote Gate Scan")
         val pad = 10f
-        if (ModPlugin.RevealAllGates && !ModPlugin.ActivateAllGates) {
+        if (RevealAllGates && !ActivateAllGates) {
             tooltip.addPara(
                 "Scans all gates located in systems with at least one non-hidden market " +
                         "and adds all gates to the intel screen, regardless of market presence in the gate's system.",
                 pad
             )
-        } else if (ModPlugin.ActivateAllGates) {
+        } else if (ActivateAllGates) {
             tooltip.addPara("Scans all gates regardless of market presence in the gate's system.", pad)
         } else {
             tooltip.addPara(
@@ -177,10 +176,10 @@ class GateScanner : BaseDurationAbility() {
         generateMarketSystemsHashset()
         for (gate in Global.getSector().getCustomEntitiesWithTag(Tags.GATE)) {
             if (!gate.memoryWithoutUpdate.getBoolean(GateEntityPlugin.GATE_SCANNED)) {
-                if (ModPlugin.ActivateAllGates) {
+                if (ActivateAllGates) {
                     Global.getSector().memoryWithoutUpdate[UNSCANNED_GATES] = true
                     return
-                } else if (ModPlugin.RevealAllGates && gateIntelDoesNotExist(gate)) {
+                } else if (RevealAllGates && gateIntelDoesNotExist(gate)) {
                     Global.getSector().memoryWithoutUpdate[UNSCANNED_GATES] = true
                     return
                 } else if (systemsWithMarkets.contains(gate.containingLocation)) {

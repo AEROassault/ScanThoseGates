@@ -9,7 +9,7 @@ import com.fs.starfarer.api.loading.Description
 import com.fs.starfarer.api.ui.SectorMapAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.util.Misc
-import org.aero.scanThoseGates.ModPlugin
+import org.aero.scanThoseGates.ModPlugin.Settings.INTEL_MEGASTRUCTURES
 import org.aero.scanThoseGates.campaign.intel.button.LayInCourse
 
 class CryosleeperIntel(private val cryosleeper: SectorEntityToken) : BaseIntel() {
@@ -85,6 +85,6 @@ class CryosleeperIntel(private val cryosleeper: SectorEntityToken) : BaseIntel()
     }
 
     companion object {
-        const val INTEL_CRYOSLEEPER = ModPlugin.INTEL_MEGASTRUCTURES
+        const val INTEL_CRYOSLEEPER = INTEL_MEGASTRUCTURES
     }
 }

@@ -14,7 +14,6 @@ import java.util.*
 
 class ModPlugin : BaseModPlugin() {
 
-
     companion object Settings {
         private val log = Global.getLogger(ModPlugin::class.java)
         init { log.level = Level.ALL }

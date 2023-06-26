@@ -10,6 +10,7 @@ import com.fs.starfarer.api.ui.SectorMapAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.util.Misc
 import org.aero.scanThoseGates.ModPlugin
+import org.aero.scanThoseGates.ModPlugin.Settings.INTEL_MEGASTRUCTURES
 import org.aero.scanThoseGates.campaign.intel.button.LayInCourse
 
 class CoronalHypershuntIntel(private val hypershunt: SectorEntityToken) : BaseIntel() {
@@ -85,6 +86,6 @@ class CoronalHypershuntIntel(private val hypershunt: SectorEntityToken) : BaseIn
     }
 
     companion object {
-        const val INTEL_HYPERSHUNT = ModPlugin.INTEL_MEGASTRUCTURES
+        const val INTEL_HYPERSHUNT = INTEL_MEGASTRUCTURES
     }
 }

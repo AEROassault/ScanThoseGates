@@ -4,11 +4,13 @@ import lunalib.lunaSettings.LunaSettings.addSettingsListener
 import lunalib.lunaSettings.LunaSettings.hasSettingsListenerOfClass
 import lunalib.lunaSettings.LunaSettingsListener
 import org.aero.scanThoseGates.ModPlugin.Settings
+import org.aero.scanThoseGates.ModPlugin.Settings.ID
+import org.aero.scanThoseGates.ModPlugin.Settings.readSettings
 
 object LunaSettingsManager : LunaSettingsListener {
     override fun settingsChanged(modID: String) {
-        if (modID == ModPlugin.ID) {
-            ModPlugin.readSettings()
+        if (modID == ID) {
+            readSettings()
         }
     }
 
