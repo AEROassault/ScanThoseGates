@@ -1,4 +1,4 @@
-package org.aero.scanThoseGates
+package org.aero.scanThoseGates.misc
 
 import lunalib.lunaSettings.LunaSettings.addSettingsListener
 import lunalib.lunaSettings.LunaSettings.hasSettingsListenerOfClass
