@@ -16,11 +16,14 @@ class RemoveScanThoseGates : BaseCommand {
             Console.showMessage(CommonStrings.ERROR_CAMPAIGN_ONLY)
             return CommandResult.WRONG_CONTEXT
         }
+
         val intelManager = Global.getSector().intelManager
         val all = ArrayList<IntelInfoPlugin>()
+
         all.addAll(intelManager.getIntel(CoronalHypershuntIntel::class.java))
         all.addAll(intelManager.getIntel(CryosleeperIntel::class.java))
-        Console.showMessage("Removing " + all.size + " custom Scan Those Gates intel entries.")
+
+        Console.showMessage("Removing ${all.size} custom intel entries for Scan Those Gates.")
         for (i in all) {
             intelManager.removeIntel(i)
         }
