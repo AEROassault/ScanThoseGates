@@ -16,8 +16,7 @@ class CryosleeperIntel(private val cryosleeper: SectorEntityToken) : BaseIntel()
     override fun createIntelInfo(info: TooltipMakerAPI, mode: ListInfoMode) {
         val c = getTitleColor(mode)
         info.addPara(name, c, 0f)
-        val initPad: Float
-        initPad = if (mode == ListInfoMode.IN_DESC) {
+        val initPad: Float = if (mode == ListInfoMode.IN_DESC) {
             10f
         } else {
             3f
@@ -38,11 +37,9 @@ class CryosleeperIntel(private val cryosleeper: SectorEntityToken) : BaseIntel()
         text.addPara(desc.text1FirstPara, Misc.getGrayColor(), opad)
         info.addImageWithText(opad)
         info.addPara(
-            "Located in the " + cryosleeper.starSystem.nameWithLowercaseType + ".",
-            opad,
+            "Located in the ${cryosleeper.starSystem.nameWithLowercaseType}.", opad,
             Misc.getPositiveHighlightColor(),
-            cryosleeper.starSystem.baseName
-        )
+            cryosleeper.starSystem.baseName)
         addGenericButton(info, width, LayInCourse(cryosleeper))
     }
 
@@ -52,12 +49,8 @@ class CryosleeperIntel(private val cryosleeper: SectorEntityToken) : BaseIntel()
 
     override fun getIntelTags(map: SectorMapAPI): Set<String> {
         val tags = super.getIntelTags(map)
-        tags.add(INTEL_CRYOSLEEPER)
+        tags.add(INTEL_MEGASTRUCTURES)
         return tags
-    }
-
-    override fun getFactionForUIColors(): FactionAPI {
-        return super.getFactionForUIColors()
     }
 
     override fun getName(): String {
@@ -82,9 +75,5 @@ class CryosleeperIntel(private val cryosleeper: SectorEntityToken) : BaseIntel()
 
     override fun getSortTier(): IntelSortTier {
         return IntelSortTier.TIER_6
-    }
-
-    companion object {
-        const val INTEL_CRYOSLEEPER = INTEL_MEGASTRUCTURES
     }
 }

@@ -16,7 +16,7 @@ class CryosleeperScanner : BaseDurationAbility() {
     override fun applyEffect(amount: Float, level: Float) {
         if (Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_CRYOSLEEPERS)) {
             for (cryosleeper in Global.getSector().getCustomEntitiesWithTag(Tags.CRYOSLEEPER)) {
-                if (tryCreateCryosleeperReportCustom(cryosleeper, log, true, false)
+                if (tryCreateCryosleeperReportCustom(cryosleeper, log, showMessage = true, listener = false)
                     && Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_CRYOSLEEPERS)
                 ) {
                     Global.getSector().memoryWithoutUpdate[CAN_SCAN_CRYOSLEEPERS] = false
@@ -25,8 +25,12 @@ class CryosleeperScanner : BaseDurationAbility() {
         }
     }
 
-    override fun isUsable(): Boolean { return Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_CRYOSLEEPERS) }
-    override fun hasTooltip(): Boolean { return true }
+    override fun isUsable(): Boolean {
+        return Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_CRYOSLEEPERS)
+    }
+    override fun hasTooltip(): Boolean {
+        return true
+    }
 
     override fun createTooltip(tooltip: TooltipMakerAPI, expanded: Boolean) {
         val fleet = fleet ?: return

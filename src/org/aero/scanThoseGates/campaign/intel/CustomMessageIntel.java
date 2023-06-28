@@ -7,7 +7,7 @@ import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import org.aero.scanThoseGates.Utilities;
+import org.aero.scanThoseGates.misc.Utilities;
 import org.aero.scanThoseGates.campaign.intel.button.IgnoreCustom;
 import org.aero.scanThoseGates.campaign.intel.button.LayInCourse;
 import org.aero.scanThoseGates.campaign.intel.button.ToggleCustom;

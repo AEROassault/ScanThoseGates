@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global
 import lunalib.lunaSettings.LunaSettings
 import org.aero.scanThoseGates.campaign.listeners.RelocationListener
 import org.aero.scanThoseGates.campaign.listeners.SalvagingListener
+import org.aero.scanThoseGates.misc.LunaSettingsManager.addToManagerIfNeeded
 import org.apache.log4j.Level
 
 class ModPlugin : BaseModPlugin() {
@@ -76,7 +77,7 @@ class ModPlugin : BaseModPlugin() {
     override fun onApplicationLoad() {
         if (lunaLibEnabled) {
             if (requiredLunaLibVersionPresent()) {
-                LunaSettingsManager.addToManagerIfNeeded()
+                addToManagerIfNeeded()
             } else {
                 throw RuntimeException("Using LunaLib with this mod requires at least version " +
                         "$LUNA_MAJOR.$LUNA_MINOR.$LUNA_PATCH of LunaLib. Update your LunaLib, or else..."

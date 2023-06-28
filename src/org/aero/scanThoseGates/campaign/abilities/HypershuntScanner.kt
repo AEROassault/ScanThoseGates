@@ -16,7 +16,7 @@ class HypershuntScanner : BaseDurationAbility() {
     override fun applyEffect(amount: Float, level: Float) {
         if (Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_HYPERSHUNTS)) {
             for (hypershunt in Global.getSector().getCustomEntitiesWithTag(Tags.CORONAL_TAP)) {
-                if (tryCreateHypershuntReport(hypershunt, log, true, false)
+                if (tryCreateHypershuntReport(hypershunt, log, showMessage = true, listener = false)
                     && Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_HYPERSHUNTS)
                 ) {
                     Global.getSector().memoryWithoutUpdate[CAN_SCAN_HYPERSHUNTS] = false
@@ -25,8 +25,12 @@ class HypershuntScanner : BaseDurationAbility() {
         }
     }
 
-    override fun isUsable(): Boolean { return Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_HYPERSHUNTS) }
-    override fun hasTooltip(): Boolean { return true }
+    override fun isUsable(): Boolean {
+        return Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_HYPERSHUNTS)
+    }
+    override fun hasTooltip(): Boolean {
+        return true
+    }
 
     override fun createTooltip(tooltip: TooltipMakerAPI, expanded: Boolean) {
         val fleet = fleet ?: return

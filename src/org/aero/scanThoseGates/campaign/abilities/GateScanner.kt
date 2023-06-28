@@ -24,14 +24,14 @@ class GateScanner : BaseDurationAbility() {
         var systemsWithMarkets = HashSet<LocationAPI>()
         var gateScanPrimed = false
 
-        const val checksReportInterval = 60f
-        var secondsSinceLastReport = 0f
+        const val checksReportInterval = 10f
+        var secondsSinceLastReport = 10f
 
         const val secondsBetweenChecks = 1f
-        var secondsSinceLastCheck = 0f
+        var secondsSinceLastCheck = 1f
     }
     override fun applyEffect(amount: Float, level: Float) {
-        log.info("Settings variable logging: RevealAllGates = $RevealAllGates, ActivateAllGates = $ActivateAllGates")
+        log.info("Scan Those Gates settings variable logging: RevealAllGates = $RevealAllGates, ActivateAllGates = $ActivateAllGates")
         if (Global.getSector().memoryWithoutUpdate.getBoolean(UNSCANNED_GATES)) {
             val startTime = System.nanoTime()
             generateMarketSystemsHashset()
@@ -73,6 +73,7 @@ class GateScanner : BaseDurationAbility() {
                 }
             }
             Global.getSector().memoryWithoutUpdate[UNSCANNED_GATES] = false
+            systemsWithMarkets.clear()
 
             val elapsedTime = System.nanoTime() - startTime
 
@@ -90,11 +91,12 @@ class GateScanner : BaseDurationAbility() {
             val startUsableCheck = System.nanoTime()
             checkForGates()
             secondsSinceLastCheck = 0f
+            systemsWithMarkets.clear()
             val endUsableCheck = System.nanoTime() - startUsableCheck
             if (secondsSinceLastReport > checksReportInterval) {
                 log.info("CheckForGates() took ${endUsableCheck / 10.0.pow(9.0)} seconds " +
                         "(${endUsableCheck / 10.0.pow(6.0)} milliseconds or " +
-                        "$endUsableCheck nanoseconds) to execute the gate scan.")
+                        "$endUsableCheck nanoseconds) to complete.")
                 secondsSinceLastReport = 0f
             }
         }
