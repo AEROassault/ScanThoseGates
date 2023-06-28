@@ -1,7 +1,6 @@
 package org.aero.scanThoseGates.campaign.intel
 
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.campaign.FactionAPI
 import com.fs.starfarer.api.campaign.SectorEntityToken
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin.IntelSortTier
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin.ListInfoMode
