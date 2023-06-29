@@ -47,9 +47,9 @@ class GateScanner : BaseDurationAbility() {
                         gateStatusString = "has been activated"
                         revealThatGate = true
                     } else if (gateScanStatus) {
-                        gateStatusString = "has already scanned"
+                        gateStatusString = "has already been activated"
                     } else {
-                        gateStatusString = "is in a marketless system"
+                        gateStatusString = "will not been activated"
                     }
                 } catch (cannotScanGate: Exception) {
                     gateStatusString = " is broken. Exception: $cannotScanGate."
@@ -59,12 +59,12 @@ class GateScanner : BaseDurationAbility() {
                         if (gateIntelDoesNotExist(gate)) {
                             if (revealThatGate || RevealAllGates) {
                                 Global.getSector().intelManager.addIntel(GateIntel(gate))
-                                gateIntelString = "has been added to the intel screen"
+                                gateIntelString = "an intel entry has been created"
                             } else {
-                                gateIntelString = "has not been added to the intel screen"
+                                gateIntelString = "an intel entry will not be created"
                             }
                         } else {
-                            gateIntelString = "has already been added to the intel screen"
+                            gateIntelString = "already has an intel entry"
                         }
                     } catch (cannotAddGateIntel: Exception) {
                         log.debug("${gate.name} in ${gate.containingLocation.name} somehow broke the intel system. Exception: $cannotAddGateIntel")
@@ -77,7 +77,7 @@ class GateScanner : BaseDurationAbility() {
 
             val elapsedTime = System.nanoTime() - startTime
 
-            log.info("It took ${elapsedTime / 10.0.pow(9.0)} seconds " +
+            log.info("GateScanner took ${elapsedTime / 10.0.pow(9.0)} seconds " +
                         "(${elapsedTime / 10.0.pow(6.0)} milliseconds or " +
                         "$elapsedTime nanoseconds) to execute the gate scan.")
         }
@@ -94,7 +94,7 @@ class GateScanner : BaseDurationAbility() {
             systemsWithMarkets.clear()
             val endUsableCheck = System.nanoTime() - startUsableCheck
             if (secondsSinceLastReport > checksReportInterval) {
-                log.info("CheckForGates() took ${endUsableCheck / 10.0.pow(9.0)} seconds " +
+                log.info("CheckForGates took ${endUsableCheck / 10.0.pow(9.0)} seconds " +
                         "(${endUsableCheck / 10.0.pow(6.0)} milliseconds or " +
                         "$endUsableCheck nanoseconds) to complete.")
                 secondsSinceLastReport = 0f
@@ -119,16 +119,13 @@ class GateScanner : BaseDurationAbility() {
         tooltip.addTitle("Remote Gate Scan")
         val pad = 10f
         if (RevealAllGates && !ActivateAllGates) {
-            tooltip.addPara(
-                "Scans all gates located in systems with at least one non-hidden market " +
-                        "and adds all gates to the intel screen, regardless of market presence in the gate's system.",
-                pad
+            tooltip.addPara("Scans all gates located in systems with at least one non-hidden market " +
+                        "and adds all gates to the intel screen, regardless of market presence in the gate's system.", pad
             )
         } else if (ActivateAllGates) {
             tooltip.addPara("Scans all gates regardless of market presence in the gate's system.", pad)
         } else {
-            tooltip.addPara(
-                "Scans all gates located in systems with at least one non-hidden market " +
+            tooltip.addPara("Scans all gates located in systems with at least one non-hidden market " +
                         "and adds them to the intel screen.", 10f
             )
         }
