@@ -24,8 +24,8 @@ class GateScanner : BaseDurationAbility() {
         var systemsWithMarkets = HashSet<LocationAPI>()
         var gateScanPrimed = false
 
-        const val checksReportInterval = 10f
-        var secondsSinceLastReport = 10f
+        const val checksReportInterval = 60f
+        var secondsSinceLastReport = 60f
 
         const val secondsBetweenChecks = 1f
         var secondsSinceLastCheck = 1f
@@ -91,9 +91,9 @@ class GateScanner : BaseDurationAbility() {
             val startUsableCheck = System.nanoTime()
             checkForGates()
             secondsSinceLastCheck = 0f
-            systemsWithMarkets.clear()
             val endUsableCheck = System.nanoTime() - startUsableCheck
             if (secondsSinceLastReport > checksReportInterval) {
+                systemsWithMarkets.clear()
                 log.info("CheckForGates took ${endUsableCheck / 10.0.pow(9.0)} seconds " +
                         "(${endUsableCheck / 10.0.pow(6.0)} milliseconds or " +
                         "$endUsableCheck nanoseconds) to complete.")
