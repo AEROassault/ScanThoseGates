@@ -3,8 +3,14 @@ package org.aero.scanThoseGates.misc
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.SectorEntityToken
 import com.fs.starfarer.api.util.Misc
+import org.aero.scanThoseGates.ModPlugin
+import org.apache.log4j.Level
 
 object Utilities {
+
+    private val log = Global.getLogger(ModPlugin::class.java)
+    init { log.level = Level.ALL }
+
     @JvmStatic
     fun getSystemNameOrHyperspace(token: SectorEntityToken): String {
         if (token.starSystem != null) {

@@ -6,7 +6,7 @@ import com.fs.starfarer.api.impl.campaign.abilities.BaseDurationAbility
 import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.util.Misc
-import org.aero.scanThoseGates.ModPlugin.Settings.CAN_SCAN_HYPERSHUNTS
+import org.aero.scanThoseGates.ModPlugin.Settings.ALLOW_HYPERSHUNT_SCAN
 import org.aero.scanThoseGates.campaign.intel.CoronalHypershuntIntel
 import org.apache.log4j.Level
 import org.apache.log4j.Logger
@@ -14,19 +14,19 @@ import org.apache.log4j.Logger
 class HypershuntScanner : BaseDurationAbility() {
 
     override fun applyEffect(amount: Float, level: Float) {
-        if (Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_HYPERSHUNTS)) {
+        if (Global.getSector().memoryWithoutUpdate.getBoolean(ALLOW_HYPERSHUNT_SCAN)) {
             for (hypershunt in Global.getSector().getCustomEntitiesWithTag(Tags.CORONAL_TAP)) {
                 if (tryCreateHypershuntReport(hypershunt, log, showMessage = true, listener = false)
-                    && Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_HYPERSHUNTS)
+                    && Global.getSector().memoryWithoutUpdate.getBoolean(ALLOW_HYPERSHUNT_SCAN)
                 ) {
-                    Global.getSector().memoryWithoutUpdate[CAN_SCAN_HYPERSHUNTS] = false
+                    Global.getSector().memoryWithoutUpdate[ALLOW_HYPERSHUNT_SCAN] = false
                 }
             }
         }
     }
 
     override fun isUsable(): Boolean {
-        return Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_HYPERSHUNTS)
+        return Global.getSector().memoryWithoutUpdate.getBoolean(ALLOW_HYPERSHUNT_SCAN)
     }
     override fun hasTooltip(): Boolean {
         return true
@@ -40,7 +40,7 @@ class HypershuntScanner : BaseDurationAbility() {
             "Remotely surveys all Coronal Hypershunts in the sector and adds them to the intel screen.",
             pad
         )
-        if (Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_HYPERSHUNTS)) {
+        if (Global.getSector().memoryWithoutUpdate.getBoolean(ALLOW_HYPERSHUNT_SCAN)) {
             tooltip.addPara("Hypershunt survey is ready to activate.", Misc.getPositiveHighlightColor(), pad)
             tooltip.addPara(
                 "WARNING. Using this ability will reveal the basic layout of systems containing a hypershunt.",

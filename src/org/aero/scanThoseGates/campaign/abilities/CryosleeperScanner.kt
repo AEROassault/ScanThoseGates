@@ -6,7 +6,7 @@ import com.fs.starfarer.api.impl.campaign.abilities.BaseDurationAbility
 import com.fs.starfarer.api.impl.campaign.ids.Tags
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.util.Misc
-import org.aero.scanThoseGates.ModPlugin.Settings.CAN_SCAN_CRYOSLEEPERS
+import org.aero.scanThoseGates.ModPlugin.Settings.ALLOW_CRYOSLEEPER_SCAN
 import org.aero.scanThoseGates.campaign.intel.CryosleeperIntel
 import org.apache.log4j.Level
 import org.apache.log4j.Logger
@@ -14,19 +14,19 @@ import org.apache.log4j.Logger
 class CryosleeperScanner : BaseDurationAbility() {
 
     override fun applyEffect(amount: Float, level: Float) {
-        if (Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_CRYOSLEEPERS)) {
+        if (Global.getSector().memoryWithoutUpdate.getBoolean(ALLOW_CRYOSLEEPER_SCAN)) {
             for (cryosleeper in Global.getSector().getCustomEntitiesWithTag(Tags.CRYOSLEEPER)) {
                 if (tryCreateCryosleeperReportCustom(cryosleeper, log, showMessage = true, listener = false)
-                    && Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_CRYOSLEEPERS)
+                    && Global.getSector().memoryWithoutUpdate.getBoolean(ALLOW_CRYOSLEEPER_SCAN)
                 ) {
-                    Global.getSector().memoryWithoutUpdate[CAN_SCAN_CRYOSLEEPERS] = false
+                    Global.getSector().memoryWithoutUpdate[ALLOW_CRYOSLEEPER_SCAN] = false
                 }
             }
         }
     }
 
     override fun isUsable(): Boolean {
-        return Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_CRYOSLEEPERS)
+        return Global.getSector().memoryWithoutUpdate.getBoolean(ALLOW_CRYOSLEEPER_SCAN)
     }
     override fun hasTooltip(): Boolean {
         return true
@@ -37,7 +37,7 @@ class CryosleeperScanner : BaseDurationAbility() {
         tooltip.addTitle("Remote Cryosleeper Survey")
         val pad = 10f
         tooltip.addPara("Remotely surveys all Cryosleepers in the sector and adds them to the intel screen.", pad)
-        if (Global.getSector().memoryWithoutUpdate.getBoolean(CAN_SCAN_CRYOSLEEPERS)) {
+        if (Global.getSector().memoryWithoutUpdate.getBoolean(ALLOW_CRYOSLEEPER_SCAN)) {
             tooltip.addPara("Cryosleeper survey is ready to activate.", Misc.getPositiveHighlightColor(), pad)
         } else {
             tooltip.addPara("Cryosleeper survey has already been used.", Misc.getNegativeHighlightColor(), pad)

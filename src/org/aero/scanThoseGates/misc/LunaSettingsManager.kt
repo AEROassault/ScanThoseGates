@@ -15,7 +15,7 @@ object LunaSettingsManager : LunaSettingsListener {
     }
 
     fun addToManagerIfNeeded() {
-        if (Settings.lunaLibEnabled && !hasSettingsListenerOfClass(LunaSettingsManager::class.java)) {
+        if (Settings.LUNALIB_ENABLED && !hasSettingsListenerOfClass(LunaSettingsManager::class.java)) {
             addSettingsListener(LunaSettingsManager)
         }
     }

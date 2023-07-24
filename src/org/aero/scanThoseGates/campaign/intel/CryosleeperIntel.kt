@@ -46,9 +46,9 @@ class CryosleeperIntel(private val cryosleeper: SectorEntityToken) : BaseIntel()
         return cryosleeper.customEntitySpec.iconName
     }
 
-    override fun getIntelTags(map: SectorMapAPI): Set<String> {
+    override fun getIntelTags(map: SectorMapAPI?): Set<String> {
         val tags = super.getIntelTags(map)
-        tags.add(INTEL_MEGASTRUCTURES)
+        tags?.add(INTEL_MEGASTRUCTURES)
         return tags
     }
 

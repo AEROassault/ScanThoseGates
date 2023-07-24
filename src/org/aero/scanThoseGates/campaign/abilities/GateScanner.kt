@@ -10,9 +10,11 @@ import com.fs.starfarer.api.impl.campaign.intel.misc.GateIntel
 import com.fs.starfarer.api.impl.campaign.rulecmd.missions.GateCMD
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.util.Misc
-import org.aero.scanThoseGates.ModPlugin.Settings.ActivateAllGates
-import org.aero.scanThoseGates.ModPlugin.Settings.RevealAllGates
 import org.aero.scanThoseGates.ModPlugin.Settings.UNSCANNED_GATES
+import org.aero.scanThoseGates.ModPlugin.Settings.activateAllGates
+import org.aero.scanThoseGates.ModPlugin.Settings.revealAllGates
+import org.aero.scanThoseGates.ModPlugin.Settings.usableCheckInterval
+import org.aero.scanThoseGates.ModPlugin.Settings.usableCheckReportInterval
 import org.apache.log4j.Level
 import kotlin.math.pow
 
@@ -24,15 +26,14 @@ class GateScanner : BaseDurationAbility() {
         var systemsWithMarkets = HashSet<LocationAPI>()
         var gateScanPrimed = false
 
-        const val checksReportInterval = 60f
-        var secondsSinceLastReport = 60f
+        var secondsSinceLastReport: Float = 0.0f
 
-        const val secondsBetweenChecks = 1f
-        var secondsSinceLastCheck = 1f
+        var secondsSinceLastCheck: Float = 0.0f
     }
+
     override fun applyEffect(amount: Float, level: Float) {
-        log.info("Scan Those Gates settings variable logging: RevealAllGates = $RevealAllGates, ActivateAllGates = $ActivateAllGates")
         if (Global.getSector().memoryWithoutUpdate.getBoolean(UNSCANNED_GATES)) {
+            log.info("Scan Those Gates settings: revealAllGates = $revealAllGates, activateAllGates = $activateAllGates")
             val startTime = System.nanoTime()
             generateMarketSystemsHashset()
             var gateStatusString = "null"
@@ -41,7 +42,7 @@ class GateScanner : BaseDurationAbility() {
                 val gateScanStatus = gate.memoryWithoutUpdate.getBoolean(GateEntityPlugin.GATE_SCANNED)
                 var revealThatGate = false
                 try {
-                    if (systemsWithMarkets.contains(gate.containingLocation) && !gateScanStatus || ActivateAllGates && !gateScanStatus) {
+                    if (gate.containingLocation in systemsWithMarkets && !gateScanStatus || activateAllGates && !gateScanStatus) {
                         gate.memory[GateEntityPlugin.GATE_SCANNED] = true
                         GateCMD.notifyScanned(gate)
                         gateStatusString = "has been activated"
@@ -57,7 +58,7 @@ class GateScanner : BaseDurationAbility() {
                 } finally {
                     try {
                         if (gateIntelDoesNotExist(gate)) {
-                            if (revealThatGate || RevealAllGates) {
+                            if (revealThatGate || revealAllGates) {
                                 Global.getSector().intelManager.addIntel(GateIntel(gate))
                                 gateIntelString = "an intel entry has been created"
                             } else {
@@ -87,12 +88,12 @@ class GateScanner : BaseDurationAbility() {
         super.advance(amount)
         secondsSinceLastCheck += amount
         secondsSinceLastReport += amount
-        if (secondsSinceLastCheck > secondsBetweenChecks) {
+        if (secondsSinceLastCheck > usableCheckInterval) {
             val startUsableCheck = System.nanoTime()
             checkForGates()
             secondsSinceLastCheck = 0f
             val endUsableCheck = System.nanoTime() - startUsableCheck
-            if (secondsSinceLastReport > checksReportInterval) {
+            if (secondsSinceLastReport > usableCheckReportInterval) {
                 systemsWithMarkets.clear()
                 log.info("CheckForGates took ${endUsableCheck / 10.0.pow(9.0)} seconds " +
                         "(${endUsableCheck / 10.0.pow(6.0)} milliseconds or " +
@@ -118,15 +119,15 @@ class GateScanner : BaseDurationAbility() {
         val fleet = fleet ?: return
         tooltip.addTitle("Remote Gate Scan")
         val pad = 10f
-        if (RevealAllGates && !ActivateAllGates) {
+        if (revealAllGates && !activateAllGates) {
             tooltip.addPara("Scans all gates located in systems with at least one non-hidden market " +
                         "and adds all gates to the intel screen, regardless of market presence in the gate's system.", pad
             )
-        } else if (ActivateAllGates) {
+        } else if (activateAllGates) {
             tooltip.addPara("Scans all gates regardless of market presence in the gate's system.", pad)
         } else {
             tooltip.addPara("Scans all gates located in systems with at least one non-hidden market " +
-                        "and adds them to the intel screen.", 10f
+                        "and adds them to the intel screen.", pad
             )
         }
         if (!gateScanPrimed) {
@@ -137,7 +138,7 @@ class GateScanner : BaseDurationAbility() {
         } else if (!Global.getSector().memoryWithoutUpdate.getBoolean(UNSCANNED_GATES)) {
             tooltip.addPara(
                 "The Janus Device has been acquired, but there are no gates available to scan.",
-                Misc.getNegativeHighlightColor(), pad
+                Misc.getHighlightColor(), pad
             )
         } else {
             tooltip.addPara(
@@ -150,8 +151,8 @@ class GateScanner : BaseDurationAbility() {
 
     private fun gateIntelDoesNotExist(gate: SectorEntityToken): Boolean {
         for (intel in Global.getSector().intelManager.getIntel(GateIntel::class.java)) {
-            val gi = intel as GateIntel
-            if (gi.gate === gate) {
+            val entry = intel as GateIntel
+            if (entry.gate === gate) {
                 return false
             }
         }
@@ -159,11 +160,11 @@ class GateScanner : BaseDurationAbility() {
     }
 
     private fun generateMarketSystemsHashset() {
-        for (systemWithMarket in Global.getSector().economy.starSystemsWithMarkets) {
-            if (!systemsWithMarkets.contains(systemWithMarket)) {
-                for (market in Global.getSector().economy.getMarkets(systemWithMarket)) {
+        for (system in Global.getSector().economy.starSystemsWithMarkets) {
+            if (system !in systemsWithMarkets) {
+                for (market in Global.getSector().economy.getMarkets(system)) {
                     if (!market.isHidden) {
-                        systemsWithMarkets.add(systemWithMarket)
+                        systemsWithMarkets.add(system)
                         break
                     }
                 }
@@ -175,10 +176,10 @@ class GateScanner : BaseDurationAbility() {
         generateMarketSystemsHashset()
         for (gate in Global.getSector().getCustomEntitiesWithTag(Tags.GATE)) {
             if (!gate.memoryWithoutUpdate.getBoolean(GateEntityPlugin.GATE_SCANNED)) {
-                if (ActivateAllGates) {
+                if (activateAllGates) {
                     Global.getSector().memoryWithoutUpdate[UNSCANNED_GATES] = true
                     return
-                } else if (RevealAllGates && gateIntelDoesNotExist(gate)) {
+                } else if (revealAllGates && gateIntelDoesNotExist(gate)) {
                     Global.getSector().memoryWithoutUpdate[UNSCANNED_GATES] = true
                     return
                 } else if (systemsWithMarkets.contains(gate.containingLocation)) {

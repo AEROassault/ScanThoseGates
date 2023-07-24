@@ -46,9 +46,9 @@ class CoronalHypershuntIntel(private val hypershunt: SectorEntityToken) : BaseIn
         return hypershunt.customEntitySpec.iconName
     }
 
-    override fun getIntelTags(map: SectorMapAPI): Set<String> {
+    override fun getIntelTags(map: SectorMapAPI?): Set<String> {
         val tags = super.getIntelTags(map)
-        tags.add(INTEL_MEGASTRUCTURES)
+        tags?.add(INTEL_MEGASTRUCTURES)
         return tags
     }
 
