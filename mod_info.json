@@ -2,9 +2,9 @@
     "id":"scan_those_gates",
     "name":"Scan Those Gates",
     "author":"AERO",
-    "version":{ "major": 1, "minor": 5, "patch": 6 },
+    "version":{ "major": 1, "minor": 5, "patch": 7 },
     "description":"Adds abilities to scan gates and reveal megastructure locations.",
-    "gameVersion":"0.96a-RC10",
+    "gameVersion":"0.97a-RC11",
     "jars":["jars/ScanThoseGates.jar"],
     "modPlugin":"org.aero.scanThoseGates.ModPlugin"
 }
